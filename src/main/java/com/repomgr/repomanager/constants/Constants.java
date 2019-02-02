@@ -10,8 +10,8 @@ public interface Constants {
     String REST_MESSAGE_CODE_INFO = "INFO";
 
     // User Roles
-    String ROLE_USER = "USER";
-    String ROLE_ADMIN = "ADMIN";
+    String ROLE_USER = "ROLE_USER";
+    String ROLE_ADMIN = "ROLE_ADMIN";
 
     // URI JWT check whitelist
     List<String> NO_AUTH_URLS = Arrays.asList("/actuator", "/v1/authentication");

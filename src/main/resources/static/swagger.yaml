@@ -63,6 +63,8 @@ paths:
           description: "Unauthorized"
           schema:
             $ref: '#/definitions/Error'
+        403:
+          description: "Forbidden. User must have scope *ROLE_USER* or *ROLE_ADMIN*"
       security:
         - Bearer: []
 
@@ -121,6 +123,8 @@ paths:
           description: "Unauthorized"
           schema:
             $ref: '#/definitions/Error'
+        403:
+          description: "Forbidden. User must have scope *ROLE_ADMIN*"
       security:
         - Bearer: []
 
@@ -159,6 +163,8 @@ paths:
           description: "Unauthorized"
           schema:
             $ref: '#/definitions/Error'
+        403:
+          description: "Forbidden. User must have scope *ROLE_ADMIN*"
       security:
         - Bearer: []
   /users/{userId}:
@@ -184,6 +190,8 @@ paths:
           description: "Unauthorized"
           schema:
             $ref: '#/definitions/Error'
+        403:
+          description: "Forbidden. User must have scope *ROLE_ADMIN*"
       security:
         - Bearer: []
 
@@ -279,12 +287,12 @@ definitions:
             maxLength: 100
             example: "MyProject"
           role:
-            description: "Role of the user. Use ADMIN for working with the /user API and USER to work with the /repository API."
+            description: "Role of the user. Use ROLE_ADMIN for working with the /user API and ROLE_USER to work with the /repository API."
             type: "string"
             enum:
-              - ADMIN
-              - USER
-            example: USER
+              - ROLE_ADMIN
+              - ROLE_USER
+            example: ROLE_USER
   Credentials:
     description: "Credentials object for username and password informations."
     allOf:

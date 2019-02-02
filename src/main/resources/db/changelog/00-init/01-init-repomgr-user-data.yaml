@@ -25,4 +25,4 @@ databaseChangeLog:
                   value: '5c6a1223-076b-4bc0-b0b7-20b0da0e23fd'
               - column:
                   name: role
-                  value: 'ADMIN'
+                  value: 'ROLE_ADMIN'

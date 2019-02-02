@@ -8,6 +8,7 @@ import com.repomgr.repomanager.rest.model.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,6 +32,7 @@ public class RestUserController {
      * @param userDto       UserDto object
      * @return              ResponseEntity with user information like userId if successful. Else it returns a ResponseDto message.
      */
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @PostMapping
     public ResponseEntity storeUser(@RequestBody UserDto userDto) {
         if (userDto != null && StringUtils.isEmpty(userDto.getRole())) {
@@ -49,6 +51,7 @@ public class RestUserController {
      * @param passwordDto       Dto which contains the new password
      * @return                  updated user info (userId and valid) or ResponseDto message for error handling
      */
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @PutMapping("/{userId}/password")
     public ResponseEntity updateUserPassword(@PathVariable("userId") String userId, @RequestBody PasswordDto passwordDto) {
         UserDto userDto = new UserDto();
@@ -69,6 +72,7 @@ public class RestUserController {
      * @param userId        The userId (UUID) to identify the user
      * @return              No Content (success) or BadRequest ResponseEntity
      */
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @DeleteMapping("/{userId}")
     public ResponseEntity deleteUser(@PathVariable("userId") String userId) {
         if (userService.deleteByUserId(userId)) {
