@@ -2,15 +2,15 @@ package com.repomgr.repomanager.rest;
 
 import com.repomgr.repomanager.infrastructure.VersionService;
 import com.repomgr.repomanager.rest.model.ResponseDto;
+import com.repomgr.repomanager.rest.model.VersionInformationContainer;
 import com.repomgr.repomanager.rest.model.VersionInformationDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * REST Controller for handling all repositories related requests.
@@ -41,5 +41,14 @@ public class RestRepositoryController {
         } else {
             return new ResponseEntity<>(responseDto, HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @GetMapping
+    public ResponseEntity<VersionInformationContainer> listVersions() {
+        List<VersionInformationDto> versionInformationDtos = versionService.listVersionInformations();
+        VersionInformationContainer versionInformationContainer = new VersionInformationContainer();
+        versionInformationContainer.setVersionInformations(versionInformationDtos);
+
+        return new ResponseEntity<>(versionInformationContainer, HttpStatus.OK);
     }
 }

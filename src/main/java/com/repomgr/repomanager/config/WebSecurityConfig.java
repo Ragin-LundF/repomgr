@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -15,6 +16,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
@@ -51,7 +53,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/actuator/**", "/v1/authentication/**").permitAll()
+                .requestMatchers(
+                        new AntPathRequestMatcher("/**", HttpMethod.OPTIONS.toString()),
+                        new AntPathRequestMatcher("/actuator/**", HttpMethod.GET.toString()),
+                        new AntPathRequestMatcher("/swagger.yaml", HttpMethod.GET.toString()),
+                        new AntPathRequestMatcher("/public/**"),
+                        new AntPathRequestMatcher("/**/*.{js,html,css}"),
+                        new AntPathRequestMatcher("/v1/authentication/**"),
+                        new AntPathRequestMatcher("/v1/repositories", HttpMethod.GET.toString()),
+                        new AntPathRequestMatcher("/v1/repositories/search", HttpMethod.POST.toString())
+                ).permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).and()

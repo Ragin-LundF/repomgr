@@ -12,6 +12,9 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Service class for handling version and artifact information.
  */
@@ -47,5 +50,17 @@ public class VersionService {
             LOG.error(message);
         }
         return responseDto;
+    }
+
+    public List<VersionInformationDto> listVersionInformations() {
+        Iterable<VersionEntity> versions = versionRepository.findAll();
+        List<VersionInformationDto> versionList = new ArrayList<>();
+        VersionInformationDto version;
+        for (VersionEntity versionEntity : versions) {
+            version = new VersionInformationDto();
+            BeanUtils.copyProperties(versionEntity, version);
+            versionList.add(version);
+        }
+        return versionList;
     }
 }
