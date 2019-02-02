@@ -46,16 +46,16 @@ public class JwtTokenUtil {
      */
     public boolean validateToken(String token, UserDetails userDetails) {
         final String username = lookupClaim(token, Claims::getSubject);
-        return (username.equals(userDetails.getUsername()) && isTokenNotExpired(token));
+        return (username.equals(userDetails.getUsername()) && ! isTokenExpired(token));
     }
 
     /**
-     * Check if token is not expired.
+     * Check if token is expired.
      *
      * @param token     JWT token
-     * @return          true if token is not expired
+     * @return          true if token is expired
      */
-    private Boolean isTokenNotExpired(String token) {
+    private Boolean isTokenExpired(String token) {
         final Date expiration = lookupClaim(token, Claims::getExpiration);
         return expiration.before(new Date());
     }

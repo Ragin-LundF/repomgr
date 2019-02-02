@@ -14,5 +14,5 @@ public interface Constants {
     String ROLE_ADMIN = "ADMIN";
 
     // URI JWT check whitelist
-    List<String> NO_AUTH_URLS = Arrays.asList("/actuator", "/authentication");
+    List<String> NO_AUTH_URLS = Arrays.asList("/actuator", "/v1/authentication");
 }
