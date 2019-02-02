@@ -16,6 +16,22 @@ For a simple start an user will be imported at the first startup.
 |---|---|---|
 | admin | password | 5c6a1223-076b-4bc0-b0b7-20b0da0e23fd |
 
+# API #
+
+A swagger file is available under [`src/main/resources/static/swagger.yaml`](src/main/resources/static/swagger.yaml).
+
+## User API ##
+
+The Repository Manager has a simple API for managing users (create, update password, delete) and a simple role-system (ADMIN, USER) to separate users and/or tokens for every project.
+
+## Authentication API ##
+
+This API offers to generate a token with credentials. With this token a pipeline can use the repository API.
+
+## Repository API ##
+
+The repository API is for storing artifact information to the system.
+
 # Docker support #
 
 ## Docker image ##
