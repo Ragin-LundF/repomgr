@@ -1,0 +1,28 @@
+databaseChangeLog:
+  - changeSet:
+      id: 01-init-repomgr-user-data-01
+      author: joerg.flade@l-und-f.de
+      comment: 'Initial Import of repo_user'
+      changes:
+        # Insert Admin user
+        - insert:
+            tableName: repo_user
+            columns:
+              - column:
+                  name: id
+                  value: 1
+              - column:
+                  name: username
+                  value: 'admin'
+              - column:
+                  name: password
+                  value: '$2a$10$cCQl52ij/UrAd60MqNIQQ..iAR9ujgZlI55JtU331hMrVUA2ltE3a'
+              - column:
+                  name: project_name
+                  value: 'MyProject'
+              - column:
+                  name: user_id
+                  value: '5c6a1223-076b-4bc0-b0b7-20b0da0e23fd'
+              - column:
+                  name: role
+                  value: 'ADMIN'

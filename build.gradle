@@ -1,0 +1,66 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+}
+
+plugins {
+    id "idea"
+    id "java"
+    id "application"
+    id "org.springframework.boot" version "2.1.2.RELEASE"
+    id "io.spring.dependency-management" version "1.0.6.RELEASE"
+    id "maven"
+    id "maven-publish"
+}
+
+wrapper {
+    gradleVersion = '4.9'
+}
+
+sourceCompatibility = JavaVersion.VERSION_1_10
+targetCompatibility = JavaVersion.VERSION_1_10
+
+startScripts {
+    mainClassName = 'com.repomgr.repomanager.RepoManagerApplication'
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven { url 'https://repo.spring.io/libs-snapshot' }
+    maven { url "https://jitpack.io" }
+    jcenter()
+}
+
+dependencies {
+    implementation "org.springframework.boot:spring-boot-starter-actuator"
+    implementation "org.springframework.boot:spring-boot-starter-security"
+    implementation "org.springframework.boot:spring-boot-starter-web"
+    implementation "org.springframework.boot:spring-boot-starter-data-jpa"
+    implementation "io.jsonwebtoken:jjwt:${versionJjwt}"
+    implementation "org.liquibase:liquibase-core"
+    runtimeOnly "org.postgresql:postgresql"
+    testImplementation "org.springframework.boot:spring-boot-starter-test"
+    testImplementation "org.springframework.security:spring-security-test"
+    testRuntime "com.h2database:h2:${versionTestH2}"
+}
+
+bootJar {
+    manifest {
+        attributes('Implementation-Title':   'Repo-Manager',
+                'Implementation-Version': version)
+    }
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId = "${groupIdName}"
+            artifactId = "${artifactIdName}"
+            version = "${version}"
+
+            from components.java
+        }
+    }
+}

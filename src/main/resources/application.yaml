@@ -1,0 +1,45 @@
+# Server configuration
+server:
+  port: ${port:9090}
+
+# Spring and datasource configuration
+spring:
+  datasource:
+    url: jdbc:postgresql://${repoadmin_db_host:localhost}:${repoadmin_db_port:5432}/${repoadmin_db_database:postgres}
+    username: ${repoadmin_db_username:postgres}
+    password: ${repoadmin_db_password:}
+    driver-class-name: org.postgresql.Driver
+    tomcat:
+      connection-properties: stringtype=unspecified
+  jpa:
+    open-in-view: false
+    properties:
+      hibernate:
+        show_sql: false
+        format_sql: true
+        temp:
+          use_jdbc_metadata_defaults: false
+security:
+  jwt:
+    client-secret: secret
+
+# Actuator Informations
+info:
+  app:
+    name: RepositoryAdmin
+    version: 0.0.1
+    description: Repository Administration
+
+# Logging
+logging:
+  level:
+    org:
+      hibernate:
+        type: error
+
+# RepoManager configuration
+repomanager:
+  security:
+    signingKey: secret
+    tokenExpirationTime: 3600
+

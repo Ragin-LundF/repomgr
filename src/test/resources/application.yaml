@@ -1,0 +1,28 @@
+# Server configuration
+server:
+  port: ${port:9090}
+
+# Spring and datasource configuration
+spring:
+  datasource:
+    url: jdbc:h2:mem:db;DB_CLOSE_DELAY=-1
+    username: sa
+    password: sa
+    driver-class-name: org.h2.Driver
+    tomcat:
+      connection-properties: stringtype=unspecified
+  jpa:
+    open-in-view: false
+    properties:
+      hibernate:
+        show_sql: false
+        format_sql: true
+        temp:
+          use_jdbc_metadata_defaults: false
+
+
+# RepoManager configuration
+repomanager:
+  security:
+    signingKey: secret
+    tokenExpirationTime: 3600

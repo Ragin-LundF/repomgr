@@ -1,0 +1,95 @@
+# repo_version
+databaseChangeLog:
+  - changeSet:
+      id: 01-init-repomgr-01
+      author: joerg.flade@l-und-f.de
+      comment: 'Initial Import of repo_version table'
+      changes:
+        - createTable:
+            tableName: repo_version
+            remarks: 'Contains version, artifact and branch locations'
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: rm_id_pkey
+                  name: id
+                  type: BIGSERIAL
+                  remarks: 'ID / Primary Key'
+              - column:
+                  name: project_name
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+                  remarks: 'name of the project which generates the artifact'
+              - column:
+                  name: branch
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+                  remarks: 'name of the branch (mostly develop or master)'
+              - column:
+                  name: group_id
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+                  remarks: 'groupid of the artifact'
+              - column:
+                  name: artifact_id
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+                  remarks: 'artifactid of the artifact'
+              - column:
+                  name: version
+                  type: VARCHAR(20)
+                  constraints:
+                    nullable: false
+                  remarks: 'version of the artifact'
+              - column:
+                  name: repository_url
+                  type: VARCHAR(512)
+                  remarks: 'url of the repository'
+              - column:
+                  name: creation_date
+                  type: TIMESTAMP(6) WITHOUT TIME ZONE
+                  constraints:
+                    nullable: false
+                  remarks: 'Creation date of the artifact'
+
+        # Index Project name
+        - createIndex:
+            tableName: repo_version
+            indexName: rm_projectname_index
+            remarks: 'Index of project name'
+            columns:
+              - column:
+                  name: project_name
+
+        # Index Branch name
+        - createIndex:
+            tableName: repo_version
+            indexName: rm_branch_index
+            remarks: 'Index of the branch'
+            columns:
+              - column:
+                  name: branch
+
+        # Index GroupId
+        - createIndex:
+            tableName: repo_version
+            indexName: rm_groupid_index
+            remarks: 'Index of the groupId'
+            columns:
+              - column:
+                  name: group_id
+
+        # Index ArtifactId
+        - createIndex:
+            tableName: repo_version
+            indexName: rm_artifactid_index
+            remarks: 'Index of the artifactId'
+            columns:
+              - column:
+                  name: artifact_id

@@ -1,0 +1,24 @@
+version: '2'
+services:
+  repomgr-server:
+    container_name: repomgr-server
+    build: .
+    ports:
+      - "9090:9090"
+    environment:
+      - REPO_MAN_DB_HOST=repomgr-database
+      - REPO_MAN_DB_PORT=5432
+      - REPO_MAN_DB_USER=repomgr
+      - REPO_MAN_DB_PASS=repomgr
+      - REPO_MAN_DB_DATABASE=repomgr
+    depends_on:
+      - repomgr-database
+  repomgr-database:
+    container_name: repomgr-database
+    image: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=repomgr
+      - POSTGRES_USER=repomgr
+      - POSTGRES_DB=repomgr

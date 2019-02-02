@@ -1,0 +1,24 @@
+package com.repomgr.repomanager.rest.model;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class TokenDto {
+    private String token;
+
+    public TokenDto(){
+
+    }
+
+    public TokenDto(String token){
+        this.token = token;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+}

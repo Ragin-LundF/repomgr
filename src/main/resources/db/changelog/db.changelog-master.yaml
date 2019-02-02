@@ -1,0 +1,10 @@
+databaseChangeLog:
+  - include:
+      file: ./00-init/01-init-repomgr.yaml
+      relativeToChangelogFile: true
+  - include:
+      file: ./00-init/01-init-repomgr-user.yaml
+      relativeToChangelogFile: true
+  - include:
+      file: ./00-init/01-init-repomgr-user-data.yaml
+      relativeToChangelogFile: true

@@ -1,0 +1,65 @@
+# repo_user
+databaseChangeLog:
+  - changeSet:
+      id: 01-init-repomgr-user-01
+      author: joerg.flade@l-und-f.de
+      comment: 'Initial Import of repo_user table'
+      changes:
+        - createTable:
+            tableName: repo_user
+            remarks: 'User table for authentication'
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: rm_user_id_pkey
+                  name: id
+                  type: BIGSERIAL
+                  remarks: 'ID / Primary Key'
+              - column:
+                  name: username
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+                    unique: true
+                  remarks: 'username'
+              - column:
+                  name: password
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+                  remarks: 'password'
+              - column:
+                  name: user_id
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+                    unique: true
+                  remarks: 'UUID for user'
+              - column:
+                  name: project_name
+                  type: VARCHAR(100)
+                  remarks: 'name of the project of the user'
+              - column:
+                  name: role
+                  type: VARCHAR(100)
+                  remarks: 'role of the user. this value can be ADMIN or USER'
+
+        # Index username
+        - createIndex:
+            tableName: repo_user
+            indexName: rm_username_index
+            remarks: 'Index of username'
+            columns:
+              - column:
+                  name: username
+
+        # Index userid
+        - createIndex:
+            tableName: repo_user
+            indexName: rm_userid_index
+            remarks: 'Index of the UUID of the user'
+            columns:
+              - column:
+                  name: user_id

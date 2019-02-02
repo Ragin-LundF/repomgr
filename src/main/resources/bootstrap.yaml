@@ -1,0 +1,4 @@
+# Spring Application
+spring:
+  application:
+    name: repo-admin
