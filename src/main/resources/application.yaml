@@ -5,10 +5,10 @@ server:
 # Spring and datasource configuration
 spring:
   datasource:
-    url: jdbc:postgresql://${repoadmin_db_host:localhost}:${repoadmin_db_port:5432}/${repoadmin_db_database:postgres}
-    username: ${repoadmin_db_username:postgres}
-    password: ${repoadmin_db_password:}
-    driver-class-name: org.postgresql.Driver
+    url: jdbc:${repoadmin_db_jdbc:postgresql}://${repoadmin_db_host:localhost}:${repoadmin_db_port:5432}/${repoadmin_db_database:repomgr}
+    username: ${repoadmin_db_username:repomgr}
+    password: ${repoadmin_db_password:repomgr}
+    driver-class-name: ${repoadmin_db_driver:org.postgresql.Driver}
     tomcat:
       connection-properties: stringtype=unspecified
   jpa:

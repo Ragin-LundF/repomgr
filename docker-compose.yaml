@@ -11,6 +11,8 @@ services:
       - REPO_MAN_DB_USER=repomgr
       - REPO_MAN_DB_PASS=repomgr
       - REPO_MAN_DB_DATABASE=repomgr
+      - REPO_MAN_DB_JDBC=postgres
+      - REPO_MAN_DB_DRIVER=org.postgresql.Driver
     depends_on:
       - repomgr-database
   repomgr-database:
@@ -22,3 +24,8 @@ services:
       - POSTGRES_PASSWORD=repomgr
       - POSTGRES_USER=repomgr
       - POSTGRES_DB=repomgr
+      - PGDATA=/var/lib/postgresql/data
+    volumes:
+      - postgres_dbdata:/var/lib/postgresql/data
+volumes:
+  postgres_dbdata: {}
