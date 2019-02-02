@@ -21,17 +21,17 @@ public class UserDto {
     @Size(max = 100)
     private String role;
     @JsonIgnore
-    private Boolean isValid = false;
+    private Boolean valid = false;
 
     public UserDto() {
     }
 
-    public UserDto(boolean isValid) {
-        this.isValid = isValid;
+    public UserDto(boolean valid) {
+        this.valid = valid;
     }
 
-    public UserDto(boolean isValid, String userId) {
-        this.isValid = isValid;
+    public UserDto(boolean valid, String userId) {
+        this.valid = valid;
         this.userId = userId;
     }
 
@@ -75,11 +75,15 @@ public class UserDto {
         this.role = role;
     }
 
+    public boolean isValid() {
+        return (getValid() != null) && getValid();
+    }
+
     public Boolean getValid() {
-        return isValid;
+        return valid;
     }
 
     public void setValid(Boolean valid) {
-        isValid = valid;
+        this.valid = valid;
     }
 }

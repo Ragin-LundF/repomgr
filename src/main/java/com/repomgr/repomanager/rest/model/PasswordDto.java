@@ -8,7 +8,7 @@ import javax.validation.constraints.Size;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class PasswordDto {
     @NotNull
-    @Size(min = 1, max = 100)
+    @Size(min = 1, max = 255)
     private String password;
 
     public String getPassword() {

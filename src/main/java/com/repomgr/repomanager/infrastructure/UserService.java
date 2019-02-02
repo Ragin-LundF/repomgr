@@ -79,6 +79,7 @@ public class UserService implements UserDetailsService {
                 return new UserDto(true, updatedUser.getUserId());
             }
         }
+        userDto.setValid(false);
         return userDto;
     }
 

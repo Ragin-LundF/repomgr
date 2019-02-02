@@ -1,0 +1,342 @@
+swagger: "2.0"
+info:
+  description: "Description API"
+  version: "1.0"
+  title: "RepoMgr API"
+  termsOfService: "http://swagger.io/terms/"
+  contact:
+    email: "joerg.flade@l-und-f.de"
+  license:
+    name: "MIT"
+    url: "https://opensource.org/licenses/MIT"
+host: "localhost:9090"
+basePath: "/v1"
+tags:
+  - name: "user"
+    description: "User management API"
+  - name: "authentication"
+    description: "Access to the RepoMgr"
+  - name: "repository"
+    description: "Operative API"
+schemes:
+  - "https"
+  - "http"
+paths:
+  /repositories:
+    post:
+      tags:
+        - "repository"
+      summary: "Store new version information"
+      description: "Store information of a new version from CI/CD process"
+      operationId: "pushNewVersion"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Information about the new version."
+          required: true
+          schema:
+            $ref: '#/definitions/VersionInformation'
+      responses:
+        201:
+          description: "Successful stored"
+          schema:
+            $ref: '#/definitions/Response'
+        400:
+          description: "Invalid input or error."
+          schema:
+            $ref: '#/definitions/Response'
+        401:
+          description: "Unauthorized"
+          schema:
+            $ref: '#/definitions/Error'
+      security:
+        - Bearer: []
+
+  /authentication/generate-token:
+    post:
+      tags:
+        - "authentication"
+      summary: "Authenticate and get token"
+      description: "User can authenticate to get a new token"
+      operationId: "generateToken"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Credentials to authenticate."
+          required: true
+          schema:
+            $ref: '#/definitions/Credentials'
+      responses:
+        200:
+          description: "successful authenticated and token generated"
+          schema:
+            $ref: '#/definitions/Token'
+        401:
+          description: "Unauthorized"
+          schema:
+            $ref: '#/definitions/Error'
+
+  /users:
+    post:
+      tags:
+        - "user"
+      summary: "Add a new user"
+      description: "Add a new user or prject"
+      operationId: "storeUser"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "User informations to store"
+          required: true
+          schema:
+            $ref: "#/definitions/User"
+      responses:
+        201:
+          description: "If user was successful stored, the response contains a valid status and the userId (UUID) for further communications."
+          schema:
+            $ref: '#/definitions/UserResponse'
+        400:
+          description: "Invalid input or error."
+          schema:
+            $ref: '#/definitions/Response'
+        401:
+          description: "Unauthorized"
+          schema:
+            $ref: '#/definitions/Error'
+      security:
+        - Bearer: []
+
+  /users/{userId}/password:
+    put:
+      tags:
+        - "user"
+      summary: "Update password of an existing user"
+      description: ""
+      operationId: "updateUserPassword"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "path"
+          name: userId
+          type: string
+          required: true
+        - in: "body"
+          name: "body"
+          description: "The new password."
+          required: true
+          schema:
+            $ref: "#/definitions/Password"
+      responses:
+        200:
+          description: "Returns userId and valid status"
+          schema:
+            $ref: '#/definitions/UserResponse'
+        400:
+          description: "Unable to update password."
+          schema:
+            $ref: '#/definitions/Response'
+        401:
+          description: "Unauthorized"
+          schema:
+            $ref: '#/definitions/Error'
+      security:
+        - Bearer: []
+  /{userId}:
+    delete:
+      tags:
+        - "user"
+      summary: "Delete an user"
+      description: ""
+      operationId: "deleteUser"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "path"
+          name: userId
+          type: string
+          required: true
+      responses:
+        204:
+          description: "User deleted"
+        400:
+          description: "Unable to delete user."
+        401:
+          description: "Unauthorized"
+          schema:
+            $ref: '#/definitions/Error'
+      security:
+        - Bearer: []
+
+
+securityDefinitions:
+  Bearer:
+    type: apiKey
+    name: Authorization
+    in: header
+
+definitions:
+  VersionInformation:
+    required:
+      - projectName
+      - branch
+      - groupId
+      - artifactId
+      - version
+      - creationDate
+    type: object
+    properties:
+      projectName:
+        description: "Project which has created the artifact"
+        type: string
+        minLength: 1
+        maxLength: 100
+        example: "MyProject"
+      branch:
+        description: "Branch from which the artifact was created from (mostly develop or master)."
+        type: string
+        minLength: 1
+        maxLength: 255
+        example: "master"
+      groupId:
+        description: "Artifact groupId"
+        type: string
+        minLength: 1
+        maxLength: 100
+        example: "com.project"
+      artifactId:
+        description: "Artifact artifactId"
+        type: string
+        minLength: 1
+        maxLength: 100
+        example: "MyLibrary"
+      version:
+        description: "Artifact version"
+        type: string
+        minLength: 1
+        maxLength: 20
+        example: "1.0.0"
+      repositoryUrl:
+        description: "URL of the repository (optional)"
+        type: string
+        maxLength: 255
+        example: "https://github.com/Ragin-LundF/repomgr"
+      creationDate:
+        description: "Date when the artifact was created."
+        type: string
+        format: date-time
+        example: "2019-02-02T11:34:35.470+0000"
+
+  UserResponse:
+    required:
+      - valid
+      - userId
+    type: object
+    properties:
+      valid:
+        type: boolean
+      userId:
+        type: string
+        maxLength: 100
+  User:
+    allOf:
+      - $ref: '#/definitions/Credentials'
+      - type: object
+        required:
+          - username
+          - password
+          - role
+        properties:
+          projectName:
+            type: "string"
+            maxLength: 100
+          role:
+            type: "string"
+            enum:
+              - ADMIN
+              - USER
+  Credentials:
+    allOf:
+      - $ref: '#/definitions/Password'
+      - type: object
+        required:
+          - username
+          - password
+        properties:
+          username:
+            type: "string"
+            minLength: 1
+            maxLength: 100
+  Password:
+    required:
+      - password
+    type: object
+    properties:
+      password:
+        type: "string"
+        maxLength: 255
+  Token:
+    required:
+      - token
+    type: object
+    properties:
+      token:
+        type: "string"
+        maxLength: 255
+        example: "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInNjb3BlcyI6W3siYXV0aG9yaXR5IjoiUk9MRV9BRE1JTiJ9XSwiaXNzIjoiUmVwb01hbmFnZXIiLCJpYXQiOjE1NDkwNjE2MTgsImV4cCI6MTU0OTA2NTIyOX0.n0CK66KFTA81XDgGF89HzIDEfuvdwUOXm1put75QiZo"
+  Message:
+    type: object
+    properties:
+      category:
+        type: string
+        enum:
+          - ERROR
+          - WARN
+          - INFO
+      message:
+        type: string
+  Response:
+    type: object
+    properties:
+      status:
+        type: boolean
+      _message:
+        $ref: '#/definitions/Message'
+  Error:
+    description: "Error messages"
+    type: object
+    properties:
+      timestamp:
+        type: string
+        format: date-time
+        description: "timestamp when error has occured"
+        example: "2019-02-02T11:34:35.470+0000"
+      status:
+        type: integer
+        description: "http error code"
+        example: 401
+      error:
+        type: string
+        description: "Error description"
+        example: "Unauthorized"
+      message:
+        type: string
+        description: "message from the backend"
+        example: "Unauthorized"
+      path:
+        type: string
+        description: "URI path where the error occured"
+        example: "/authentication/generate-token"

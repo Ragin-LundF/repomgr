@@ -21,7 +21,7 @@ public class RestRepositoryController {
         this.versionService = versionService;
     }
 
-    @PostMapping(value = "")
+    @PostMapping
     public ResponseEntity<ResponseDto> pushNewVersion(@RequestBody VersionInformationDto versionInformationDto) {
         ResponseDto responseDto = versionService.pushNewVersion(versionInformationDto);
 

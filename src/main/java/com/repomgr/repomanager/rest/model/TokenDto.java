@@ -2,8 +2,11 @@ package com.repomgr.repomanager.rest.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
+import javax.validation.constraints.NotNull;
+
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class TokenDto {
+    @NotNull
     private String token;
 
     public TokenDto(){

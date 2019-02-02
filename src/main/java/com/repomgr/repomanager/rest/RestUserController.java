@@ -34,13 +34,17 @@ public class RestUserController {
     }
 
     @PutMapping("/{userId}/password")
-    public ResponseEntity<UserDto> updateUserPassword(@PathVariable("userId") String userId, @RequestBody PasswordDto passwordDto) {
+    public ResponseEntity updateUserPassword(@PathVariable("userId") String userId, @RequestBody PasswordDto passwordDto) {
         UserDto userDto = new UserDto();
         userDto.setUserId(userId);
         userDto.setPassword(passwordDto.getPassword());
         UserDto updatedUser = userService.updatePassword(userDto);
 
-        return new ResponseEntity<>(updatedUser, HttpStatus.OK);
+        if (updatedUser != null && updatedUser.isValid() && ! StringUtils.isEmpty(updatedUser.getUserId())) {
+            return new ResponseEntity<>(updatedUser, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(new ResponseDto(false, new MessageDto("ERROR", "Can not update the user.")), HttpStatus.BAD_REQUEST);
+        }
     }
 
     @DeleteMapping("/{userId}")
