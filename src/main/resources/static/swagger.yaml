@@ -84,8 +84,6 @@ paths:
           description: "Invalid input or error."
           schema:
             $ref: '#/definitions/Response'
-      security:
-        - Bearer: []
 
   /authentication/generate-token:
     post:
