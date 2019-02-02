@@ -1,0 +1,182 @@
+{
+	"info": {
+		"_postman_id": "f8d551bc-8d57-e567-315a-d55fa89fa85b",
+		"name": "RepoManager",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "[GET] Actuator",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:9090/actuator/health",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9090",
+					"path": [
+						"actuator",
+						"health"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[POST] Generate token",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"username\": \"admin\",\n\t\"password\": \"password\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:9090/authentication/generate-token",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9090",
+					"path": [
+						"authentication",
+						"generate-token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[POST] Add User",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInNjb3BlcyI6W3siYXV0aG9yaXR5IjoiUk9MRV9BRE1JTiJ9XSwiaXNzIjoiUmVwb01hbmFnZXIiLCJpYXQiOjE1NDkwNjE2MTgsImV4cCI6MTU0OTA2NTIyOX0.n0CK66KFTA81XDgGF89HzIDEfuvdwUOXm1put75QiZo",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"username\": \"user\",\n\t\"password\": \"password\",\n\t\"projectName\": \"MyProject\",\n\t\"role\": \"USER\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:9090/users",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9090",
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[PUT] Update User Password",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInNjb3BlcyI6W3siYXV0aG9yaXR5IjoiUk9MRV9BRE1JTiJ9XSwiaXNzIjoiUmVwb01hbmFnZXIiLCJpYXQiOjE1NDkwNjE2MTgsImV4cCI6MTU0OTA2NTIyOX0.n0CK66KFTA81XDgGF89HzIDEfuvdwUOXm1put75QiZo",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"password\": \"newPassword\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:9090/users/fa40f586-1588-4193-9ae0-d2ab2b316031/password",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9090",
+					"path": [
+						"users",
+						"fa40f586-1588-4193-9ae0-d2ab2b316031",
+						"password"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[POST] NewVersion",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"username\": \"admin\",\n\t\"password\": \"password\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:9090/authentication/generate-token",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9090",
+					"path": [
+						"authentication",
+						"generate-token"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
