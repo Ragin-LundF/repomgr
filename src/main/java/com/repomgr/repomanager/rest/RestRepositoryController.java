@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/repositories")
+@RequestMapping("/v1/repositories")
 public class RestRepositoryController {
     private final VersionService versionService;
 

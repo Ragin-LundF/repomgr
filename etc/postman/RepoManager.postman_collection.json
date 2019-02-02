@@ -48,16 +48,17 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"username\": \"admin\",\n\t\"password\": \"password\"\n}"
+					"raw": "{\n\t\"username\": \"admin\",\n\t\"password\": \"passsword\"\n}"
 				},
 				"url": {
-					"raw": "http://localhost:9090/authentication/generate-token",
+					"raw": "http://localhost:9090/v1/authentication/generate-token",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "9090",
 					"path": [
+						"v1",
 						"authentication",
 						"generate-token"
 					]
@@ -91,13 +92,14 @@
 					"raw": "{\n\t\"username\": \"user\",\n\t\"password\": \"password\",\n\t\"projectName\": \"MyProject\",\n\t\"role\": \"USER\"\n}"
 				},
 				"url": {
-					"raw": "http://localhost:9090/users",
+					"raw": "http://localhost:9090/v1/users",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "9090",
 					"path": [
+						"v1",
 						"users"
 					]
 				}
@@ -130,13 +132,14 @@
 					"raw": "{\n\t\"password\": \"newPassword\"\n}"
 				},
 				"url": {
-					"raw": "http://localhost:9090/users/fa40f586-1588-4193-9ae0-d2ab2b316031/password",
+					"raw": "http://localhost:9090/v1/users/fa40f586-1588-4193-9ae0-d2ab2b316031/password",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "9090",
 					"path": [
+						"v1",
 						"users",
 						"fa40f586-1588-4193-9ae0-d2ab2b316031",
 						"password"
@@ -164,13 +167,14 @@
 					"raw": "{\n\t\"username\": \"admin\",\n\t\"password\": \"password\"\n}"
 				},
 				"url": {
-					"raw": "http://localhost:9090/authentication/generate-token",
+					"raw": "http://localhost:9090/v1/authentication/generate-token",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "9090",
 					"path": [
+						"v1",
 						"authentication",
 						"generate-token"
 					]
