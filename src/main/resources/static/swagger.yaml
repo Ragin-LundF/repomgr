@@ -67,6 +67,25 @@ paths:
           description: "Forbidden. User must have scope *ROLE_USER* or *ROLE_ADMIN*"
       security:
         - Bearer: []
+    get:
+      tags:
+        - "repository"
+      summary: "List all entries"
+      description: "List all artifacts"
+      operationId: "listVersionInformations"
+      produces:
+        - "application/json"
+      responses:
+        200:
+          description: "Successful stored"
+          schema:
+            $ref: '#/definitions/VersionInformationContainer'
+        400:
+          description: "Invalid input or error."
+          schema:
+            $ref: '#/definitions/Response'
+      security:
+        - Bearer: []
 
   /authentication/generate-token:
     post:
@@ -254,6 +273,15 @@ definitions:
         type: string
         format: date-time
         example: "2019-02-02T11:34:35.470+0000"
+
+  VersionInformationContainer:
+    description: "Response container object for VersionInformation lists"
+    type: object
+    properties:
+      versionInformations:
+        type: array
+        items:
+          $ref: '#/definitions/VersionInformation'
 
   UserResponse:
     description: "Repsonse object for user requests, that contains the userId and the valid-state."
