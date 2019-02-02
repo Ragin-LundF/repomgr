@@ -7,6 +7,20 @@ This tool is build to manage versions from CI/CD processes.
 It can be used at the build-pipeline to store artifact versions and additional information to a central database.
 There are possibilities to differ between branch versions and projects.
 
+# RepoMgr UI #
+
+A simple UI is included to see the available packages.
+[http://localhost:9090/public/index.html](http://localhost:9090/public/index.html)
+
+At the moment this UI is pre-build as static bundle and index.html!
+
+If something is changed at the React code, the bundle.js must be rebuild.
+
+```bash
+cd src/main/resources/ui
+npm install
+npx webpack
+```
 
 # Admin User #
 
