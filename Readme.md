@@ -20,6 +20,8 @@ For a simple start an user will be imported at the first startup.
 
 A swagger file is available under [`src/main/resources/static/swagger.yaml`](src/main/resources/static/swagger.yaml).
 
+There is also a [Postman](https://www.getpostman.com) collection available for some small tool support. You can find it under [`etc/postman/`](etc/postman).
+
 ## User API ##
 
 The Repository Manager has a simple API for managing users (create, update password, delete) and a simple role-system (ADMIN, USER) to separate users and/or tokens for every project.
