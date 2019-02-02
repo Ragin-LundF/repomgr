@@ -2,7 +2,6 @@ package com.repomgr.repomanager;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.repomgr.repomanager.constants.Constants;
-import com.repomgr.repomanager.infrastructure.VersionService;
 import com.repomgr.repomanager.rest.model.PasswordDto;
 import com.repomgr.repomanager.rest.model.TokenDto;
 import com.repomgr.repomanager.rest.model.UserDto;
@@ -32,6 +31,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 public class RepoManagerApplicationTests {
+    private final static String API_AUTHENTICATION_URL = "/v1/authentication";
+    private final static String API_USER_URL = "/v1/users";
+    private final static String API_REPOSITORY_URL = "/v1/repositories";
+
     @LocalServerPort
     private int port;
 
@@ -67,7 +70,7 @@ public class RepoManagerApplicationTests {
 
         // update password
         ResultActions resultActions = mockMvc.perform(
-                put("/users/" + userDto.getUserId() + "/password")
+                put(API_USER_URL + "/" + userDto.getUserId() + "/password")
                         .content(body)
                         .headers(createAuthHeader())
         );
@@ -88,7 +91,7 @@ public class RepoManagerApplicationTests {
 
         // delete the user
         ResultActions resultActions = mockMvc.perform(
-                delete("/users/" + userDto.getUserId())
+                delete(API_USER_URL + "/" + userDto.getUserId())
                         .headers(createAuthHeader())
         );
 
@@ -113,7 +116,7 @@ public class RepoManagerApplicationTests {
 
         // perform request
         ResultActions resultActions = mockMvc.perform(
-                post("/repositories")
+                post(API_REPOSITORY_URL)
                         .content(body)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .headers(createAuthHeader())
@@ -142,7 +145,7 @@ public class RepoManagerApplicationTests {
         String body = objectMapper.writeValueAsString(userDto);
 
         ResultActions resultActions = mockMvc.perform(
-                post("/authentication/generate-token")
+                post(API_AUTHENTICATION_URL + "/generate-token")
                         .content(body)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
         );
@@ -189,7 +192,7 @@ public class RepoManagerApplicationTests {
 
         // execute request
         return mockMvc.perform(
-                post("/users")
+                post(API_USER_URL)
                         .content(body)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .headers(createAuthHeader())
