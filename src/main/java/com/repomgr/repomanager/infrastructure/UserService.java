@@ -54,6 +54,7 @@ public class UserService implements UserDetailsService {
             return new UserDto(true, userEntity.getUserId());
         }
 
+        userDto.setValid(false);
         return userDto;
     }
 

@@ -20,7 +20,6 @@ public class UserDto {
     private String projectName;
     @Size(max = 100)
     private String role;
-    @JsonIgnore
     private Boolean valid = false;
 
     public UserDto() {
