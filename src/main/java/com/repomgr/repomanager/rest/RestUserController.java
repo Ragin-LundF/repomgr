@@ -11,6 +11,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * REST Controller for handling all user related requests.
+ */
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/v1/users")
@@ -22,6 +25,12 @@ public class RestUserController {
         this.userService = userService;
     }
 
+    /**
+     * REST-API method for storing user.
+     *
+     * @param userDto       UserDto object
+     * @return              ResponseEntity with user information like userId if successful. Else it returns a ResponseDto message.
+     */
     @PostMapping
     public ResponseEntity storeUser(@RequestBody UserDto userDto) {
         if (userDto != null && StringUtils.isEmpty(userDto.getRole())) {
@@ -33,6 +42,13 @@ public class RestUserController {
         }
     }
 
+    /**
+     * REST-API method for updating the password of the user.
+     *
+     * @param userId            The userId (UUID)
+     * @param passwordDto       Dto which contains the new password
+     * @return                  updated user info (userId and valid) or ResponseDto message for error handling
+     */
     @PutMapping("/{userId}/password")
     public ResponseEntity updateUserPassword(@PathVariable("userId") String userId, @RequestBody PasswordDto passwordDto) {
         UserDto userDto = new UserDto();
@@ -47,6 +63,12 @@ public class RestUserController {
         }
     }
 
+    /**
+     * REST-API method for deleting an user
+     *
+     * @param userId        The userId (UUID) to identify the user
+     * @return              No Content (success) or BadRequest ResponseEntity
+     */
     @DeleteMapping("/{userId}")
     public ResponseEntity deleteUser(@PathVariable("userId") String userId) {
         if (userService.deleteByUserId(userId)) {

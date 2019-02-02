@@ -14,6 +14,9 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * REST Controller for handling all authentication related requests.
+ */
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/v1/authentication")
@@ -29,6 +32,13 @@ public class RestAuthenticationController {
         this.userService = userService;
     }
 
+    /**
+     * REST-API method for generating a new token for an user.
+     *
+     * @param userDto       Credentials of the user (username, password at the UserDto object)
+     * @return              new token for the user
+     * @throws AuthenticationException
+     */
     @PostMapping(value = "/generate-token")
     public ResponseEntity<TokenDto> generateToken(@RequestBody UserDto userDto) throws AuthenticationException {
         final Authentication authentication = authenticationManager.authenticate(

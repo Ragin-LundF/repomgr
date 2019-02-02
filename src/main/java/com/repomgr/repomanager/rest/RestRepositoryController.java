@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * REST Controller for handling all repositories related requests.
+ */
 @RestController
 @RequestMapping("/v1/repositories")
 public class RestRepositoryController {
@@ -21,6 +24,12 @@ public class RestRepositoryController {
         this.versionService = versionService;
     }
 
+    /**
+     * REST-API method for pushing new version information to the database.
+     *
+     * @param versionInformationDto     Information about the artifact
+     * @return                          Created (success) or Bad Request (error)
+     */
     @PostMapping
     public ResponseEntity<ResponseDto> pushNewVersion(@RequestBody VersionInformationDto versionInformationDto) {
         ResponseDto responseDto = versionService.pushNewVersion(versionInformationDto);

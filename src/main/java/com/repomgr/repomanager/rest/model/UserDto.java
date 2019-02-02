@@ -1,11 +1,17 @@
 package com.repomgr.repomanager.rest.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+/**
+ * UserDTO which represents an user.
+ * <br />
+ * This DTO can be used in most user contexts.
+ * <br />
+ * It also contains a valid parameter, which can be used for responses.
+ */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserDto {
     @NotNull

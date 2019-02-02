@@ -22,6 +22,28 @@ A swagger file is available under [`src/main/resources/static/swagger.yaml`](src
 
 There is also a [Postman](https://www.getpostman.com) collection available for some small tool support. You can find it under [`etc/postman/`](etc/postman).
 
+## Security ##
+
+Each endpoint is secured with a JWT token, with the exception of the `/authentication/generate-token` endpoint.
+
+This endpoint needs credentials and creates a new token for the user.
+
+Example of a JWT-token content:
+
+```json
+{
+  "sub": "admin",
+  "scopes": [
+    {
+      "authority": "ROLE_ADMIN"
+    }
+  ],
+  "iss": "RepoManager",
+  "iat": 1549061618,
+  "exp": 1549065229
+}
+```
+
 ## User API ##
 
 The Repository Manager has a simple API for managing users (create, update password, delete) and a simple role-system (ADMIN, USER) to separate users and/or tokens for every project.

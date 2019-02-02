@@ -25,6 +25,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Collections;
 
+/**
+ * Filter for JWT token management.
+ */
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final static String TOKEN_PREFIX = "Bearer";
 
@@ -38,6 +41,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Autowired
     private RepoManagerProperties repoManagerProperties;
 
+    /**
+     * Filter method for handle token management.
+     *
+     * @param request       HttpRequests
+     * @param response      HttpResponse
+     * @param chain         FilterChain
+     * @throws IOException
+     * @throws ServletException
+     */
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
         if (! isWhitelistUri(request.getRequestURI())) {
@@ -76,6 +88,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         chain.doFilter(request, response);
     }
 
+    /**
+     * Check, if the given URI is part of the whitelist.
+     *
+     * @see Constants#NO_AUTH_URLS
+     */
     private boolean isWhitelistUri(String uri) {
         for (String whitelistUri : Constants.NO_AUTH_URLS) {
             if (uri.contains(whitelistUri)) {

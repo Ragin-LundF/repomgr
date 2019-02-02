@@ -4,6 +4,9 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 
 import javax.validation.constraints.NotNull;
 
+/**
+ * Token DTO
+ */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class TokenDto {
     @NotNull

@@ -5,6 +5,9 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+/**
+ * Password DTO
+ */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class PasswordDto {
     @NotNull

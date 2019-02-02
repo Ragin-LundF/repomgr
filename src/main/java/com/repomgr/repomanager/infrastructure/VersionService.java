@@ -12,6 +12,9 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+/**
+ * Service class for handling version and artifact information.
+ */
 @Service
 public class VersionService {
     private final static Logger LOG = LoggerFactory.getLogger(VersionService.class);
@@ -22,6 +25,12 @@ public class VersionService {
         this.versionRepository = versionRepository;
     }
 
+    /**
+     * Store new version to database.
+     *
+     * @param versionInformationDto     Version information DTO
+     * @return                          ResponseDto with status and messages, if something failed.
+     */
     public ResponseDto pushNewVersion(VersionInformationDto versionInformationDto) {
         ResponseDto responseDto = new ResponseDto(false);
         VersionEntity versionEntity = new VersionEntity();

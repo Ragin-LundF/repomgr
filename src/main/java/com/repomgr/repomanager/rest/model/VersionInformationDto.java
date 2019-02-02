@@ -6,6 +6,9 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Date;
 
+/**
+ * VersionInformation DTO for repository and artifact related information.
+ */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class VersionInformationDto {
     @NotNull
