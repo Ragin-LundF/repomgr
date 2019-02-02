@@ -1,4 +1,7 @@
 # Repository Manager #
+
+[![Build Status](https://dev.azure.com/ragin666/RepoMgr/_apis/build/status/RepoMgr-Gradle-CI?branchName=master&jobName=RepoMgr%20Build)](https://dev.azure.com/ragin666/RepoMgr/_build/latest?definitionId=6&branchName=master)
+
 This tool is build to manage versions from CI/CD processes.
 
 It can be used at the build-pipeline to store artifact versions and additional information to a central database.
