@@ -13,6 +13,7 @@ class RepositoryPage extends React.Component {
             artifactId: '',
             groupId: '',
             version: '',
+            latestVersion: false,
             loading: false
         };
 
@@ -44,7 +45,8 @@ class RepositoryPage extends React.Component {
         let filter = {
             "artifactId": this.state.artifactId,
             "groupId": this.state.groupId,
-            "version": this.state.version
+            "version": this.state.version,
+            "latestVersion": this.state.latestVersion
         };
         versionService.search(filter, sortField, sortDirection, page, size).then(versions => {
             this.setState({page: versions.page});
@@ -96,11 +98,26 @@ class RepositoryPage extends React.Component {
                                     <input type="text" className="form-control input-lg" name="version" id="version" aria-describedby="basic-addon3" value={this.state.version} onChange={this.handleInputChange} />
                                 </div>
                             </div>
-                            <div className="col-lg-6">&nbsp;</div>
+                        </div>
+                        <div className="row">
+                            <div className="col-lg-12">&nbsp;</div>
                         </div>
                         <div className="row">
                             <div className="col-lg-12">
-                                <div className="input-group my-5">
+                                <div className="input-group">
+                                    <span className="input-group-addon input-lg">
+                                        <input type="checkbox" value={this.state.latestVersion} aria-label="latestVersion" id="latestVersion" name="latestVersion" onChange={this.handleInputChange} />
+                                        <span className="input-lg" id="basic-addon3">Latest version only</span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="row">
+                            <div className="col-lg-12">&nbsp;</div>
+                        </div>
+                        <div className="row">
+                            <div className="col-lg-12">
+                                <div className="input-group">
                                     <button type="submit" className="btn btn-default btn-lg" aria-label="Left Align">
                                         <span className="glyphicon glyphicon-align-left" aria-hidden="true"> Filter</span>
                                     </button>

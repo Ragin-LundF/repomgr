@@ -30,6 +30,7 @@ public class VersionInformationDto {
     private String repositoryUrl;
     @NotNull
     private Date creationDate;
+    private Boolean latestVersion;
 
     public String getProjectName() {
         return projectName;
@@ -85,5 +86,13 @@ public class VersionInformationDto {
 
     public void setCreationDate(Date creationDate) {
         this.creationDate = creationDate;
+    }
+
+    public Boolean getLatestVersion() {
+        return latestVersion;
+    }
+
+    public void setLatestVersion(Boolean latestVersion) {
+        this.latestVersion = latestVersion;
     }
 }

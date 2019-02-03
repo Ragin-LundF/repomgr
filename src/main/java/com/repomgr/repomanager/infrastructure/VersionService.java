@@ -10,10 +10,11 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,7 +57,7 @@ public class VersionService {
 
     public VersionInformationContainerDto listVersionInformations(VersionInformationDto versionInformationDto, Pageable pageable) {
         // create query and execute database statement
-        Page<VersionEntity> pagedResult = versionRepository.findAll((root, query, criteriaBuilder) -> {
+        Page<VersionEntity> pagedResult = versionRepository.findAll((Specification<VersionEntity>) (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
             if (!StringUtils.isEmpty(versionInformationDto.getVersion())) {
                 predicates.add(criteriaBuilder.equal(root.get("version"), versionInformationDto.getVersion()));
@@ -74,6 +75,17 @@ public class VersionService {
 
             if (!StringUtils.isEmpty(versionInformationDto.getBranch())) {
                 predicates.add(criteriaBuilder.equal(root.get("branch"), versionInformationDto.getBranch()));
+            }
+
+            if (versionInformationDto.getLatestVersion() != null && versionInformationDto.getLatestVersion()) {
+                Subquery<Long> subQuery = query.subquery(Long.class);
+                Root<VersionEntity> from = subQuery.from(VersionEntity.class);
+                subQuery.select(criteriaBuilder.max(from.get("id")).as(Long.class))
+                        .where(criteriaBuilder.and(predicates.toArray(new Predicate[0])))
+                        .groupBy(from.get("artifactId"), from.get("groupId"))
+                        .from(VersionEntity.class);
+
+                return criteriaBuilder.in(root.get("id")).value(subQuery);
             }
 
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));

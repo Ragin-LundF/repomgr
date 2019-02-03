@@ -97,7 +97,7 @@ paths:
         - in: "query"
           name: size
           type: integer
-          description: "Size of page elements. (*Default is 20*)"
+          description: "Size of page elements. (*Default is 10*)"
         - in: "body"
           name: "body"
           description: "Credentials to authenticate."
@@ -283,6 +283,10 @@ definitions:
         minLength: 1
         maxLength: 20
         example: "1.0.0"
+      latestVersion:
+        description: "If true, only the latest versions will be returned"
+        type: boolean
+        example: true
 
   VersionInformation:
     description: "Contains informations about the artifacts."

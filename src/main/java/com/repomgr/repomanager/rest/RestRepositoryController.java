@@ -57,7 +57,7 @@ public class RestRepositoryController {
             @Nullable @Max(100) @RequestParam Integer size
     ) {
         // Paging
-        size = (size == null) ? 20 : size;
+        size = (size == null) ? 10 : size;
         page = (page == null) ? 0 : page;
         Pageable pageable;
         if (!StringUtils.isEmpty(sortField) && ! StringUtils.isEmpty(sortDirection)) {
