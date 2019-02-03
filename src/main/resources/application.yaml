@@ -15,7 +15,7 @@ spring:
     open-in-view: false
     properties:
       hibernate:
-        show_sql: true
+        show_sql: false
         format_sql: true
         temp:
           use_jdbc_metadata_defaults: false
