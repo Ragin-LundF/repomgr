@@ -284,7 +284,7 @@ definitions:
         maxLength: 20
         example: "1.0.0"
       latestVersion:
-        description: "If true, only the latest versions will be returned"
+        description: "If true, only the latest versions will be returned. *This flag can only be used while search filtering.*"
         type: boolean
         example: true
 
@@ -396,6 +396,10 @@ definitions:
         type: "string"
         maxLength: 255
         example: "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInNjb3BlcyI6W3siYXV0aG9yaXR5IjoiUk9MRV9BRE1JTiJ9XSwiaXNzIjoiUmVwb01hbmFnZXIiLCJpYXQiOjE1NDkwNjE2MTgsImV4cCI6MTU0OTA2NTIyOX0.n0CK66KFTA81XDgGF89HzIDEfuvdwUOXm1put75QiZo"
+      userId:
+        description: "User ID of the current user"
+        type: string
+        example: "5c6a1223-076b-4bc0-b0b7-20b0da0e23fd"
   Page:
     description: "Page object for list results"
     type: object

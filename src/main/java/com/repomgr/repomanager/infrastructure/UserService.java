@@ -64,17 +64,21 @@ public class UserService implements UserDetailsService {
      * @return          userDto object with new userId.
      */
     public UserDto storeUser(UserDto userDto) {
-        UserEntity userEntity = new UserEntity();
-        BeanUtils.copyProperties(userDto, userEntity);
-        userEntity.setPassword(bCryptPasswordEncoder.encode(userEntity.getPassword()));
-        userEntity.setUserId(UUID.randomUUID().toString());
-        userEntity = userRepository.save(userEntity);
+        UserEntity dbUser = userRepository.findFirstByUsername(userDto.getUsername());
+        if (dbUser == null) {
+            UserEntity userEntity = new UserEntity();
+            BeanUtils.copyProperties(userDto, userEntity);
+            userEntity.setPassword(bCryptPasswordEncoder.encode(userEntity.getPassword()));
+            userEntity.setUserId(UUID.randomUUID().toString());
+            userEntity = userRepository.save(userEntity);
 
-        if (! StringUtils.isEmpty(userEntity.getId())) {
-            return new UserDto(true, userEntity.getUserId());
+            if (!StringUtils.isEmpty(userEntity.getId())) {
+                return new UserDto(true, userEntity.getUserId());
+            }
         }
 
         userDto.setValid(false);
+
         return userDto;
     }
 

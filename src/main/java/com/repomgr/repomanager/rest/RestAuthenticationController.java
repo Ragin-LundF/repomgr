@@ -51,6 +51,6 @@ public class RestAuthenticationController {
         final UserDto user = userService.lookupUser(userDto);
         final String token = jwtTokenUtil.generateToken(user);
 
-        return new ResponseEntity<>(new TokenDto(token), HttpStatus.CREATED);
+        return new ResponseEntity<>(new TokenDto(token, userDto.getUserId()), HttpStatus.CREATED);
     }
 }

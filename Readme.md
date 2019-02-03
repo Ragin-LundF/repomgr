@@ -70,6 +70,89 @@ This API offers to generate a token with credentials. With this token a pipeline
 
 The repository API is for storing artifact information to the system.
 
+# Using from console #
+
+## Create an user token ##
+First generate a valid user token:
+
+```bash
+curl -d '{"username":"admin","password":"password"}' -H "Content-Type: application/json" -X POST http://localhost:9090/v1/authentication/generate-token
+```
+
+This returns something like this:
+```json
+{"token":"eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInNjb3BlcyI6W1t7ImF1dGhvcml0eSI6IlJPTEVfQURNSU4ifV1dLCJpc3MiOiJSZXBvTWFuYWdlciIsImlhdCI6MTU0OTIyMzgxMiwiZXhwIjoxNTQ5MjI3NDEyfQ.LPki3LvCaWdkkW-O7grZ66eCKT9QdK76jsSjyLZQ4uw","userId":"5c6a1223-076b-4bc0-b0b7-20b0da0e23fd"}
+```
+
+The token is the new Bearer token and should be set to all privileged endpoints at the `Authorization` header with the Prefix `Bearer `:
+
+```
+-H "Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInNjb3BlcyI6W1t7ImF1dGhvcml0eSI6IlJPTEVfQURNSU4ifV1dLCJpc3MiOiJSZXBvTWFuYWdlciIsImlhdCI6MTU0OTIyMzM5NywiZXhwIjoxNTQ5MjI2OTk3fQ.8CoevJ61fF8lDNH7EmIcsHhnbxFwE7mmOe0fXBHJtwA"
+```
+
+## Change password of admin ##
+It is a good idea to change the admin password now:
+
+```bash
+curl -d '{ "password": "newpassword"}' -H "Content-Type: application/json" -H "accept: application/json" -H "Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInNjb3BlcyI6W1t7ImF1dGhvcml0eSI6IlJPTEVfQURNSU4ifV1dLCJpc3MiOiJSZXBvTWFuYWdlciIsImlhdCI6MTU0OTIyMzM5NywiZXhwIjoxNTQ5MjI2OTk3fQ.8CoevJ61fF8lDNH7EmIcsHhnbxFwE7mmOe0fXBHJtwA" -X PUT "http://localhost:9090/v1/users/5c6a1223-076b-4bc0-b0b7-20b0da0e23fd/password"
+```
+
+If this was successful, a response like the following should be there:
+
+```json
+{"userId":"5c6a1223-076b-4bc0-b0b7-20b0da0e23fd","valid":true}
+```
+
+## Creating new users for projects ##
+
+Now it is time to create new users. Each project can have its own user with its own token.
+
+```bash
+curl -d '{"password":"myprj","username":"user001","projectName":"MyProject","role":"ROLE_USER"}' -H "accept: application/json" -H "Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInNjb3BlcyI6W1t7ImF1dGhvcml0eSI6IlJPTEVfQURNSU4ifV1dLCJpc3MiOiJSZXBvTWFuYWdlciIsImlhdCI6MTU0OTIyMzM5NywiZXhwIjoxNTQ5MjI2OTk3fQ.8CoevJ61fF8lDNH7EmIcsHhnbxFwE7mmOe0fXBHJtwA" -H "Content-Type: application/json" -X POST "http://localhost:9090/v1/users"
+```
+
+This results (hopefully) in such a response:
+
+```json
+{"userId":"89955603-defe-4aea-b2ee-dcc89820e22e","valid":true}
+```
+
+Before this user can be used in a pipeline, the user has to generate a token via the authentication-API like at the first step, but with the user credentials.
+
+If valid is false, then something went wrong (mostly username already exists).
+
+## Insert a new version from build-pipeline ##
+
+Now a jenkins can post a new build version information with the following command:
+
+```bash
+curl -d '{"projectName":"MyProject","branch":"master","groupId":"com.project","artifactId":"MyLibrary","version":"1.0.0","repositoryUrl":"https://github.com/Ragin-LundF/repomgr","creationDate":"2019-03-02T20:30:35.420+0000"}' -X POST "http://localhost:9090/v1/repositories" -H "accept: application/json" -H "Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInNjb3BlcyI6W1t7ImF1dGhvcml0eSI6IlJPTEVfQURNSU4ifV1dLCJpc3MiOiJSZXBvTWFuYWdlciIsImlhdCI6MTU0OTIyMzgxMiwiZXhwIjoxNTQ5MjI3NDEyfQ.LPki3LvCaWdkkW-O7grZ66eCKT9QdK76jsSjyLZQ4uw" -H "Content-Type: application/json"
+```
+
+The result of this POST should look like:
+
+```json
+{"status":true}
+```
+
+## Querying the repository ##
+
+Last but not least, there is a possibility to ask for versions with the search:
+
+```bash
+curl -d '{"groupId":"com.project","artifactId":"MyLibrary","latestVersion":true}' -X POST "http://localhost:9090/v1/repositories/search" -H "accept: application/json" -H "Content-Type: application/json"
+```
+
+Which should result in:
+
+```bash
+{"versionInformations":[{"projectName":"MyProject","branch":"master","groupId":"com.project","artifactId":"MyLibrary","version":"1.0.0","repositoryUrl":"https://github.com/Ragin-LundF/repomgr","creationDate":"2019-03-02T20:30:35.420+0000"}],"page":{"totalElements":1,"totalPages":1,"currentPage":1,"numberOfElements":1}}
+```
+
+With the `"latestVersion":true` flag at the request, Repository Manager searches only for the latest version.
+
+For more informations about the filtering possibilities, please look into the [swagger.yaml](src/main/resources/static/swagger.yaml) file.
+
 # Docker support #
 
 ## Docker image ##
