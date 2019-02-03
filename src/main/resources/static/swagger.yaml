@@ -67,14 +67,43 @@ paths:
           description: "Forbidden. User must have scope *ROLE_USER* or *ROLE_ADMIN*"
       security:
         - Bearer: []
-    get:
+  /repositories/search:
+    post:
       tags:
         - "repository"
-      summary: "List all entries"
-      description: "List all artifacts"
+      summary: "List repository data"
+      description: "List artifacts at repository with additional filter options"
       operationId: "listVersionInformations"
+      consumes:
+        - "application/json"
       produces:
         - "application/json"
+      parameters:
+        - in: "query"
+          name: sortField
+          type: string
+          description: "Field to sort to"
+        - in: "query"
+          name: sortDirection
+          type: string
+          enum:
+            - ASC
+            - DESC
+          description: "Field to sort to"
+        - in: "query"
+          name: page
+          type: integer
+          description: "The page to show. (*Default is 1*)"
+        - in: "query"
+          name: size
+          type: integer
+          description: "Size of page elements. (*Default is 20*)"
+        - in: "body"
+          name: "body"
+          description: "Credentials to authenticate."
+          required: true
+          schema:
+            $ref: '#/definitions/VersionInformationFilter'
       responses:
         200:
           description: "Successful stored"
@@ -220,15 +249,8 @@ securityDefinitions:
     in: header
 
 definitions:
-  VersionInformation:
-    description: "Contains informations about the artifacts."
-    required:
-      - projectName
-      - branch
-      - groupId
-      - artifactId
-      - version
-      - creationDate
+  VersionInformationFilter:
+    description: "VersionInformation filter for search."
     type: object
     properties:
       projectName:
@@ -261,16 +283,30 @@ definitions:
         minLength: 1
         maxLength: 20
         example: "1.0.0"
-      repositoryUrl:
-        description: "URL of the repository (optional)"
-        type: string
-        maxLength: 255
-        example: "https://github.com/Ragin-LundF/repomgr"
-      creationDate:
-        description: "Date when the artifact was created."
-        type: string
-        format: date-time
-        example: "2019-02-02T11:34:35.470+0000"
+
+  VersionInformation:
+    description: "Contains informations about the artifacts."
+    allOf:
+      - $ref: '#/definitions/VersionInformationFilter'
+      - type: object
+        required:
+          - projectName
+          - branch
+          - groupId
+          - artifactId
+          - version
+          - creationDate
+        properties:
+          repositoryUrl:
+            description: "URL of the repository (optional)"
+            type: string
+            maxLength: 255
+            example: "https://github.com/Ragin-LundF/repomgr"
+          creationDate:
+            description: "Date when the artifact was created."
+            type: string
+            format: date-time
+            example: "2019-02-02T11:34:35.470+0000"
 
   VersionInformationContainer:
     description: "Response container object for VersionInformation lists"
@@ -280,6 +316,8 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/VersionInformation'
+      page:
+        $ref: '#/definitions/Page'
 
   UserResponse:
     description: "Repsonse object for user requests, that contains the userId and the valid-state."
@@ -354,6 +392,28 @@ definitions:
         type: "string"
         maxLength: 255
         example: "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInNjb3BlcyI6W3siYXV0aG9yaXR5IjoiUk9MRV9BRE1JTiJ9XSwiaXNzIjoiUmVwb01hbmFnZXIiLCJpYXQiOjE1NDkwNjE2MTgsImV4cCI6MTU0OTA2NTIyOX0.n0CK66KFTA81XDgGF89HzIDEfuvdwUOXm1put75QiZo"
+  Page:
+    description: "Page object for list results"
+    type: object
+    properties:
+      totalElements:
+        description: "Number of total elements"
+        type: integer
+        format: int64
+        example: 24
+      totalPages:
+        description: "Number of pages depending on current page size"
+        type: integer
+        example: 2
+      currentPage:
+        description: "Number of the current page"
+        type: integer
+        example: 2
+      numberOfElements:
+        description: "Number of elements of this page"
+        type: integer
+        example: 4
+
   Message:
     description: "Message object for returning defined error messages"
     type: object

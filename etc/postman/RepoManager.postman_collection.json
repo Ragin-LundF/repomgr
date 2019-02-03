@@ -181,6 +181,55 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "[POST] Search Repositories",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"branch\": \"develop\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:9090/v1/repositories/search?page=1&size=5&sortField=version&sortDirection=ASC",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9090",
+					"path": [
+						"v1",
+						"repositories",
+						"search"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "1"
+						},
+						{
+							"key": "size",
+							"value": "5"
+						},
+						{
+							"key": "sortField",
+							"value": "version"
+						},
+						{
+							"key": "sortDirection",
+							"value": "ASC"
+						}
+					]
+				}
+			},
+			"response": []
 		}
 	]
 }

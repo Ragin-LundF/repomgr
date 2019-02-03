@@ -2,14 +2,20 @@ package com.repomgr.repomanager.rest;
 
 import com.repomgr.repomanager.infrastructure.VersionService;
 import com.repomgr.repomanager.rest.model.ResponseDto;
-import com.repomgr.repomanager.rest.model.VersionInformationContainer;
+import com.repomgr.repomanager.rest.model.VersionInformationContainerDto;
 import com.repomgr.repomanager.rest.model.VersionInformationDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.Nullable;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.constraints.Max;
 import java.util.List;
 
 /**
@@ -43,11 +49,26 @@ public class RestRepositoryController {
         }
     }
 
-    @GetMapping
-    public ResponseEntity<VersionInformationContainer> listVersions() {
-        List<VersionInformationDto> versionInformationDtos = versionService.listVersionInformations();
-        VersionInformationContainer versionInformationContainer = new VersionInformationContainer();
-        versionInformationContainer.setVersionInformations(versionInformationDtos);
+    @PostMapping("/search")
+    public ResponseEntity<VersionInformationContainerDto> listVersions(
+            @RequestBody VersionInformationDto versionInformationDto,
+            @Nullable @RequestParam String sortField,
+            @Nullable @RequestParam Sort.Direction sortDirection,
+            @Nullable @RequestParam Integer page,
+            @Nullable @Max(100) @RequestParam Integer size
+    ) {
+        // Paging
+        size = (size == null) ? 20 : size;
+        page = (page == null) ? 0 : page-1;
+        Pageable pageable;
+        if (!StringUtils.isEmpty(sortField) && ! StringUtils.isEmpty(sortDirection)) {
+            pageable = PageRequest.of(page, size, new Sort(sortDirection, sortField));
+        } else {
+            pageable = PageRequest.of(page, size);
+        }
+
+        // get data and return
+        VersionInformationContainerDto versionInformationContainer = versionService.listVersionInformations(versionInformationDto, pageable);
 
         return new ResponseEntity<>(versionInformationContainer, HttpStatus.OK);
     }

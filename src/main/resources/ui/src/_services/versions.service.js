@@ -1,32 +1,39 @@
 import config from 'config';
-import { authHeader } from '../_helpers';
+// import { authHeader } from '../_helpers';
 
 export const versionService = {
-    findAll,
     search,
 };
 
-function search(filter) {
+function search(filter, sortField, sortDirection, page, size) {
+    if (filter == null) {
+        filter = {}
+    }
     const requestOptions = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ filter })
+        body: JSON.stringify(filter)
     };
 
-    return fetch(`${config.apiUrl}/v1/repositories/search`, requestOptions)
+    let urlParamObj = {
+        "sortField": sortField,
+        "sortDirection": sortDirection,
+        "page": page,
+        "size": size
+    };
+    let urlParams = Object.keys(urlParamObj).map((key) => {
+        if (urlParamObj[key] != null) {
+            return encodeURIComponent(key) + '=' + encodeURIComponent(urlParamObj[key])
+        } else {
+            return '';
+        }
+    }).join('&');
+
+    return fetch(`${config.apiUrl}/v1/repositories/search?${urlParams}`, requestOptions)
         .then(handleResponse)
         .then(versions => {
             return versions;
         });
-}
-
-function findAll() {
-    const requestOptions = {
-        method: 'GET',
-        // headers: authHeader()
-    };
-
-    return fetch(`${config.apiUrl}/v1/repositories`, requestOptions).then(handleResponse);
 }
 
 function handleResponse(response) {
