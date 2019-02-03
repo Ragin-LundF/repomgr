@@ -16,7 +16,6 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.Max;
-import java.util.List;
 
 /**
  * REST Controller for handling all repositories related requests.
@@ -59,7 +58,7 @@ public class RestRepositoryController {
     ) {
         // Paging
         size = (size == null) ? 20 : size;
-        page = (page == null) ? 0 : page-1;
+        page = (page == null) ? 0 : page;
         Pageable pageable;
         if (!StringUtils.isEmpty(sortField) && ! StringUtils.isEmpty(sortDirection)) {
             pageable = PageRequest.of(page, size, new Sort(sortDirection, sortField));

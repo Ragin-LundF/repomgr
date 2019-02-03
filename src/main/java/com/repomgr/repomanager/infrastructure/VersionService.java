@@ -9,16 +9,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,8 +33,8 @@ public class VersionService {
     /**
      * Store new version to database.
      *
-     * @param versionInformationDto     Version information DTO
-     * @return                          ResponseDto with status and messages, if something failed.
+     * @param versionInformationDto Version information DTO
+     * @return ResponseDto with status and messages, if something failed.
      */
     public ResponseDto pushNewVersion(VersionInformationDto versionInformationDto) {
         ResponseDto responseDto = new ResponseDto(false);
@@ -86,7 +81,7 @@ public class VersionService {
 
         // map data to DTO
         List<VersionInformationDto> versionList = new ArrayList<>();
-        if (! pagedResult.isEmpty()) {
+        if (!pagedResult.isEmpty()) {
             VersionInformationDto version;
             for (VersionEntity versionEntity : pagedResult.getContent()) {
                 version = new VersionInformationDto();

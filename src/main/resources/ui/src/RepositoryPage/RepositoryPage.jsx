@@ -1,6 +1,7 @@
 import React from 'react';
 
 import {versionService} from '../_services';
+import ReactTable from "react-table";
 
 class RepositoryPage extends React.Component {
     constructor(props) {
@@ -11,11 +12,13 @@ class RepositoryPage extends React.Component {
             page: {},
             artifactId: '',
             groupId: '',
-            version: ''
+            version: '',
+            loading: false
         };
 
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.fetchData = this.fetchData.bind(this);
     }
 
     componentDidMount() {
@@ -49,72 +52,133 @@ class RepositoryPage extends React.Component {
         });
     }
 
+    fetchData(state, instance) {
+        let sortField = '';
+        let sortDirection = '';
+        this.setState({ loading: true });
+        if (state.sorted && state.sorted.length > 0) {
+            sortField = state.sorted[0].id;
+            if (state.sorted[0].desc) {
+                sortDirection = 'DESC';
+            } else {
+                sortDirection = 'ASC';
+            }
+
+        }
+        this.search(sortField, sortDirection, state.page, state.pageSize);
+        this.setState({ loading: false });
+    }
+
     render() {
-        const { page, versions } = this.state;
+        const { loading, page, versions } = this.state;
         return (
             <div className="col-lg-12">
-                <h1>Repository Manager</h1>
-                <p>Find the available packages here</p>
-                <h3>Available packages:</h3>
-                {versions.length &&
-                    <span>
-                        <div>
-                            <form onSubmit={this.handleSubmit}>
-                                <label>
-                                    ArtifactId:
-                                    <input type="text" name="artifactId" value={this.state.artifactId} onChange={this.handleInputChange} />
-                                </label>
-                                <label>
-                                    GroupId:
-                                    <input type="text" name="groupId" value={this.state.groupId} onChange={this.handleInputChange} />
-                                </label>
-                                <label>
-                                    Version:
-                                    <input type="text" name="version" value={this.state.version} onChange={this.handleInputChange} />
-                                </label>
-                                <input type="submit" value="Filter" />
-                            </form>
+                <div className="jumbotron">
+                    <h1>Repository Manager</h1>
+                    <p>Find the available packages here</p>
+                    <form onSubmit={this.handleSubmit}>
+                        <div className="row">
+                            <div className="col-lg-4">
+                                <div className="input-group">
+                                    <span className="input-group-addon input-lg" id="basic-addon3">artifactId&nbsp;</span>
+                                    <input type="text" className="form-control input-lg" name="artifactId" id="artifactId" aria-describedby="basic-addon3" value={this.state.artifactId} onChange={this.handleInputChange} />
+                                </div>
+                            </div>
+                            <div className="col-lg-4">
+                                <div className="input-group">
+                                    <span className="input-group-addon input-lg" id="basic-addon3">groupId&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                                    <input type="text" className="form-control input-lg" name="groupId" id="groupId" aria-describedby="basic-addon3" value={this.state.groupId} onChange={this.handleInputChange} />
+                                </div>
+                            </div>
+                            <div className="col-lg-4">
+                                <div className="input-group">
+                                    <span className="input-group-addon input-lg" id="basic-addon3">version&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                                    <input type="text" className="form-control input-lg" name="version" id="version" aria-describedby="basic-addon3" value={this.state.version} onChange={this.handleInputChange} />
+                                </div>
+                            </div>
+                            <div className="col-lg-6">&nbsp;</div>
                         </div>
-                        <div>
-                            <table className="table">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">projectName</th>
-                                        <th scope="col">branch</th>
-                                        <th scope="col">groupId</th>
-                                        <th scope="col">artifactId</th>
-                                        <th scope="col">version</th>
-                                        <th scope="col">repositoryUrl</th>
-                                        <th scope="col">creationDate</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                {versions.map((version, index) =>
-                                    <tr key={index}>
-                                        <td>{version.projectName}</td>
-                                        <td>{version.branch}</td>
-                                        <td>{version.groupId}</td>
-                                        <td>{version.artifactId}</td>
-                                        <td>{version.version}</td>
-                                        <td>{version.repositoryUrl}</td>
-                                        <td>
-                                            {new Intl.DateTimeFormat('en-GB', {
+                        <div className="row">
+                            <div className="col-lg-12">
+                                <div className="input-group my-5">
+                                    <button type="submit" className="btn btn-default btn-lg" aria-label="Left Align">
+                                        <span className="glyphicon glyphicon-align-left" aria-hidden="true"> Filter</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div className="panel panel-default">
+                    <div className="panel-heading">
+                        <h3>Available packages</h3>
+                    </div>
+                    <div className="panel-body">
+                        {versions.length &&
+                        <ReactTable
+                            columns={[
+                                {
+                                    Header: "Project name",
+                                    accessor: "projectName",
+                                    id: "projectName",
+                                },
+                                {
+                                    Header: "Group Id",
+                                    accessor: "groupId",
+                                    id: "groupId",
+                                },
+                                {
+                                    Header: "Artifact Id",
+                                    accessor: "artifactId",
+                                    id: "artifactId",
+                                },
+                                {
+                                    Header: "Version",
+                                    accessor: "version",
+                                    id: "version"
+                                },
+                                {
+                                    Header: "Branch",
+                                    accessor: "branch",
+                                    id: "branch",
+                                },
+                                {
+                                    Header: "Repository URL",
+                                    accessor: "repositoryUrl",
+                                    id: "repositoryUrl",
+                                },
+                                {
+                                    Header: "Creation Date",
+                                    accessor: "creationDate",
+                                    id: "creationDate",
+                                    Cell: row => (
+                                        <span>
+                                        {new Intl.DateTimeFormat('en-GB', {
                                                 year: 'numeric',
-                                                month: 'long',
+                                                month: '2-digit',
                                                 day: '2-digit',
                                                 hour: '2-digit',
                                                 hour12: false,
                                                 minute: '2-digit'
-                                            }).format(new Date(version.creationDate))}
-                                        </td>
-                                    </tr>
-                                )}
-                                </tbody>
-                            </table>
-                        </div>
+                                            }).format(new Date(row.value))}
+                                        </span>
+                                    )
+                                },
+                            ]}
+                            manual // Forces table not to paginate or sort automatically, so we can handle it server-side
+                            data={versions}
+                            pages={page.totalPages} // Display the total number of pages
+                            loading={loading} // Display the loading overlay when we need it
+                            onFetchData={this.fetchData} // Request new data when things change
+                            defaultPageSize={10}
+                            className="-striped -highlight"
+                        />
+                        }
+                    </div>
+                    <div className="panel-footer">
                         Page {page.currentPage} of {page.totalPages} with {page.numberOfElements} of {page.totalElements} elements.
-                    </span>
-                }
+                    </div>
+                </div>
             </div>
         );
     }
