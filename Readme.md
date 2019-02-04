@@ -7,6 +7,8 @@ This tool is build to manage versions from CI/CD processes.
 It can be used at the build-pipeline to store artifact versions and additional information to a central database.
 There are possibilities to differ between branch versions and projects.
 
+![alt text](etc/img/diagram.png "Logo Title Text 1")
+
 # RepoMgr UI #
 
 A simple UI is included to see the available packages.
@@ -153,12 +155,46 @@ With the `"latestVersion":true` flag at the request, Repository Manager searches
 
 For more informations about the filtering possibilities, please look into the [swagger.yaml](src/main/resources/static/swagger.yaml) file.
 
-# Docker support #
+# Deployment #
 
-## Docker image ##
+## Configuration option ##
+
+The `JAR` file is a self-runnable JAR and can be started with:
+
+```bash
+java -jar repomanager-x.x.x.jar
+```
+
+To support simple configuration, there are some additional programm arguments:
+
+| Argument | Description | Default value
+|---|---|---|
+| --repoadmin_db_host | Host or IP of the database | localhost |
+| --repoadmin_db_port | Port of the database | 5432 |
+| --repoadmin_db_username | The database username | repomgr |
+| --repoadmin_db_password | The database user password | repomgr |
+| --repoadmin_db_database | The database | repomgr |
+| --repoadmin_db_jdbc | JDBC server name (jdbc://REPO_MAN_DB_JDBC:/...) | postgres |
+| --repoadmin_db_driver | JDBC driver class | org.postgresql.Driver |
+
+
+At the moment only a postgres driver is included.
+
+To support other databases, it is possible to store the driver to a subdirectory and to start the application like this:
+
+```bash
+java \
+-cp repomanager-x.x.x.jar \
+-Dloader.path=<path_to_your_additional_jars> \
+org.springframework.boot.loader.PropertiesLauncher
+```
+
+## Docker support ##
+
+### Docker image ###
 The existing `Dockerfile` builds the application with an alpine linux and OpenJDK 11.
 
-### Environment variables ###
+#### Environment variables ####
 The image needs the following environment variables for application configuration.
 
 | Variable | Description | Default value |
@@ -171,13 +207,13 @@ The image needs the following environment variables for application configuratio
 | REPO_MAN_DB_JDBC | JDBC server name (jdbc://REPO_MAN_DB_JDBC:/...) | postgres |
 | REPO_MAN_DB_DRIVER | JDBC driver class | org.postgresql.Driver |
 
-### Building an image ###
+#### Building an image ####
 
 ```bash
 docker build -t repo-mgr .
 ```
 
-### Running the image ###
+#### Running the image ####
 
 After the build, the image can be started like:
 ```bash
@@ -189,7 +225,7 @@ Stop the image with:
 docker stop RepoManager
 ```
 
-## Using docker-compose ##
+### Using docker-compose ###
 
 The pre-configured `docker-compose.yaml` builds the server image and a postgres database.
 
