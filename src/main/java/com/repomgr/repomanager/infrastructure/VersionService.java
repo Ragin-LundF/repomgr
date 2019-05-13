@@ -14,7 +14,9 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import javax.persistence.criteria.*;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import javax.persistence.criteria.Subquery;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,7 +25,7 @@ import java.util.List;
  */
 @Service
 public class VersionService {
-    private final static Logger LOG = LoggerFactory.getLogger(VersionService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(VersionService.class);
     private final VersionRepository versionRepository;
 
     @Autowired
@@ -44,7 +46,7 @@ public class VersionService {
 
         VersionEntity savedEntity = versionRepository.save(versionEntity);
 
-        if (savedEntity != null && savedEntity.getId() != null) {
+        if (savedEntity.getId() != null) {
             responseDto.setStatus(true);
         } else {
             String message = "Unable to store GroupId [" + versionInformationDto.getGroupId() + "] ArtifactId [" + versionInformationDto.getArtifactId() + "] in version [" + versionInformationDto.getVersion() + "]";
@@ -109,7 +111,7 @@ public class VersionService {
         pageDto.setCurrentPage(1 + pagedResult.getNumber());
         pageDto.setNumberOfElements(pagedResult.getNumberOfElements());
 
-        // map versioninformations
+        // map version information
         VersionInformationContainerDto versionInformationContainerDto = new VersionInformationContainerDto();
         versionInformationContainerDto.setVersionInformations(versionList);
         versionInformationContainerDto.setPage(pageDto);

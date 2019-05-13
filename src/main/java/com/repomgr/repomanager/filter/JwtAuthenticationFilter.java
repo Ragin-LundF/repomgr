@@ -1,7 +1,6 @@
 package com.repomgr.repomanager.filter;
 
 import com.repomgr.repomanager.config.RepoManagerProperties;
-import com.repomgr.repomanager.config.WebSecurityConfig;
 import com.repomgr.repomanager.constants.Constants;
 import com.repomgr.repomanager.security.JwtTokenUtil;
 import io.jsonwebtoken.Claims;
@@ -10,7 +9,6 @@ import io.jsonwebtoken.SignatureException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -23,13 +21,12 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Collections;
 
 /**
  * Filter for JWT token management.
  */
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-    private final static String TOKEN_PREFIX = "Bearer";
+    private static final String TOKEN_PREFIX = "Bearer";
 
     @Autowired
     @Qualifier("userService")
@@ -44,34 +41,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     /**
      * Filter method for handle token management.
      *
-     * @param request       HttpRequests
-     * @param response      HttpResponse
-     * @param chain         FilterChain
+     * @param request  HttpRequests
+     * @param response HttpResponse
+     * @param chain    FilterChain
      * @throws IOException
      * @throws ServletException
      */
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
-        if (! isWhitelistUri(request.getRequestURI())) {
+        if (!isWhitelistUri(request.getRequestURI())) {
             String header = request.getHeader(repoManagerProperties.getSecurity().getHeaderName());
-            String username = null;
-            String token = null;
-
-            if (header != null && header.startsWith(TOKEN_PREFIX)) {
-                token = header.replace(TOKEN_PREFIX, "").trim();
-
-                try {
-                    username = jwtTokenUtil.lookupClaim(token, Claims::getSubject);
-                } catch (IllegalArgumentException e) {
-                    logger.error("Can not read username from token.", e);
-                } catch (ExpiredJwtException e) {
-                    logger.warn("The token is expired.", e);
-                } catch (SignatureException e) {
-                    logger.error("Authentication failed.");
-                }
-            } else {
-                logger.error("Can not find token. Please add a Bearer token with the prefix [" + TOKEN_PREFIX + "].");
-            }
+            String token = readTokenFromHeader(header);
+            String username = readUsernameFromToken(token);
 
             if (!StringUtils.isEmpty(username) && SecurityContextHolder.getContext().getAuthentication() == null) {
                 UserDetails userDetails = userDetailsService.loadUserByUsername(username);
@@ -86,6 +67,47 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         chain.doFilter(request, response);
+    }
+
+    /**
+     * read the token from header
+     *
+     * @param header    Header
+     * @return          Token only or null
+     */
+    private String readTokenFromHeader(String header) {
+        if (StringUtils.startsWithIgnoreCase(header, TOKEN_PREFIX)) {
+            return header.replace(TOKEN_PREFIX, "").trim();
+        } else {
+            logger.error("Can not find token. Please add a Bearer token with the prefix [" + TOKEN_PREFIX + "].");
+        }
+        return null;
+    }
+
+    /**
+     * Read username from token, if token exists.
+     *
+     * If there is no token or the username could not be extracted, then this method returns null.
+     *
+     * @param token     Token
+     * @return          Username or null
+     */
+    private String readUsernameFromToken(String token) {
+        if (! StringUtils.isEmpty(token)) {
+            try {
+                return jwtTokenUtil.lookupClaim(token, Claims::getSubject);
+            } catch (IllegalArgumentException e) {
+                logger.error("Can not read username from token.", e);
+            } catch (ExpiredJwtException e) {
+                logger.warn("The token is expired.", e);
+            } catch (SignatureException e) {
+                logger.error("Authentication failed.");
+            }
+        } else {
+            logger.error("No token found.");
+        }
+
+        return null;
     }
 
     /**

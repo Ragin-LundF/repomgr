@@ -31,9 +31,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 public class RepoManagerApplicationTests {
-    private final static String API_AUTHENTICATION_URL = "/v1/authentication";
-    private final static String API_USER_URL = "/v1/users";
-    private final static String API_REPOSITORY_URL = "/v1/repositories";
+    private static final String API_AUTHENTICATION_URL = "/v1/authentication";
+    private static final String API_USER_URL = "/v1/users";
+    private static final String API_REPOSITORY_URL = "/v1/repositories";
 
     @LocalServerPort
     private int port;

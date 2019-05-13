@@ -5,6 +5,7 @@ import com.repomgr.repomanager.rest.model.MessageDto;
 import com.repomgr.repomanager.rest.model.PasswordDto;
 import com.repomgr.repomanager.rest.model.ResponseDto;
 import com.repomgr.repomanager.rest.model.UserDto;
+import org.owasp.encoder.Encode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -54,6 +55,7 @@ public class RestUserController {
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @PutMapping("/{userId}/password")
     public ResponseEntity updateUserPassword(@PathVariable("userId") String userId, @RequestBody PasswordDto passwordDto) {
+        userId = Encode.forJava(userId);
         UserDto userDto = new UserDto();
         userDto.setUserId(userId);
         userDto.setPassword(passwordDto.getPassword());

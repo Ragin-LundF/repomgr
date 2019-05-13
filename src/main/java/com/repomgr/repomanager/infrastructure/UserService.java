@@ -1,6 +1,5 @@
 package com.repomgr.repomanager.infrastructure;
 
-import com.repomgr.repomanager.constants.Constants;
 import com.repomgr.repomanager.infrastructure.model.UserEntity;
 import com.repomgr.repomanager.infrastructure.repository.UserRepository;
 import com.repomgr.repomanager.rest.model.UserDto;
@@ -118,7 +117,7 @@ public class UserService implements UserDetailsService {
         if(userEntity != null) {
             userEntity.setPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
             UserEntity updatedUser = userRepository.save(userEntity);
-            if (updatedUser != null && ! StringUtils.isEmpty(updatedUser.getId())) {
+            if (! StringUtils.isEmpty(updatedUser.getId())) {
                 return new UserDto(true, updatedUser.getUserId());
             }
         }

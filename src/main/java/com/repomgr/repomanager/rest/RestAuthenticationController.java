@@ -40,7 +40,7 @@ public class RestAuthenticationController {
      * @throws AuthenticationException
      */
     @PostMapping(value = "/generate-token")
-    public ResponseEntity<TokenDto> generateToken(@RequestBody UserDto userDto) throws AuthenticationException {
+    public ResponseEntity<TokenDto> generateToken(@RequestBody UserDto userDto) {
         final Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         userDto.getUsername(),

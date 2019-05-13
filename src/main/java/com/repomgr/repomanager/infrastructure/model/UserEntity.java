@@ -1,9 +1,6 @@
 package com.repomgr.repomanager.infrastructure.model;
 
-import org.springframework.util.StringUtils;
-
 import javax.persistence.*;
-import javax.validation.constraints.Size;
 import java.io.Serializable;
 
 @Entity(name = "repo_user")

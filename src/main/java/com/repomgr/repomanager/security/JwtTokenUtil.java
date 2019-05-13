@@ -9,6 +9,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import java.util.Collections;
 import java.util.Date;
@@ -94,10 +95,13 @@ public class JwtTokenUtil {
      * @return                  Content of the claim
      */
     public <T> T lookupClaim(String token, Function<Claims, T> claimsResolver) {
-        final Claims claims = Jwts.parser()
-                .setSigningKey(repoManagerProperties.getSecurity().getSigningKey())
-                .parseClaimsJws(token)
-                .getBody();
-        return claimsResolver.apply(claims);
+        if (! StringUtils.isEmpty(token)) {
+            final Claims claims = Jwts.parser()
+                    .setSigningKey(repoManagerProperties.getSecurity().getSigningKey())
+                    .parseClaimsJws(token)
+                    .getBody();
+            return claimsResolver.apply(claims);
+        }
+        return null;
     }
 }
