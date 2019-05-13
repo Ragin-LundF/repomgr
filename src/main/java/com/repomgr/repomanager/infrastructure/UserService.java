@@ -126,14 +126,14 @@ public class UserService implements UserDetailsService {
     }
 
     /**
-     * Overwriten method from Spring Security to load an user.
+     * Overwritten method from Spring Security to load an user.
      *
      * @param username          username
      * @return                  Spring UserDetails object
      * @throws UsernameNotFoundException
      */
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String username) {
         UserDto userDto = new UserDto();
         userDto.setUsername(username);
         userDto = lookupUser(userDto);
