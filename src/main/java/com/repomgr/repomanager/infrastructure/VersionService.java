@@ -3,6 +3,7 @@ package com.repomgr.repomanager.infrastructure;
 import com.repomgr.repomanager.constants.Constants;
 import com.repomgr.repomanager.infrastructure.model.VersionEntity;
 import com.repomgr.repomanager.infrastructure.repository.VersionRepository;
+import com.repomgr.repomanager.rest.model.artifacts.ArtifactDto;
 import com.repomgr.repomanager.rest.model.artifacts.VersionInformationContainerDto;
 import com.repomgr.repomanager.rest.model.artifacts.VersionInformationDto;
 import com.repomgr.repomanager.rest.model.common.MessageDto;
@@ -50,6 +51,8 @@ public class VersionService {
         BeanUtils.copyProperties(versionInformationDto, versionEntity);
         BeanUtils.copyProperties(versionInformationDto.getArtifact(), versionEntity);
 
+        resolveDependencies(versionInformationDto, versionEntity);
+
         VersionEntity savedEntity = versionRepository.save(versionEntity);
 
         if (savedEntity.getId() != null) {
@@ -75,6 +78,38 @@ public class VersionService {
     public VersionInformationContainerDto listVersionInformation(VersionInformationDto versionInformationDto, Pageable pageable) {
         LOG.debug("[VersionService][listVersionInformation] List versions in service started.");
 
+        // create query and execute database statement
+        Page<VersionEntity> pagedResult = listVersionEntities(versionInformationDto, pageable);
+
+        // map data to DTO
+        List<VersionInformationDto> versionList = new ArrayList<>();
+        if (!pagedResult.isEmpty()) {
+            VersionInformationDto version;
+            for (VersionEntity versionEntity : pagedResult.getContent()) {
+                version = new VersionInformationDto();
+                BeanUtils.copyProperties(versionEntity, version);
+                versionList.add(version);
+            }
+        }
+
+        // map pages
+        PageDto pageDto = new PageDto();
+        pageDto.setTotalElements(pagedResult.getTotalElements());
+        pageDto.setTotalPages(pagedResult.getTotalPages());
+        pageDto.setCurrentPage(1 + pagedResult.getNumber());
+        pageDto.setNumberOfElements(pagedResult.getNumberOfElements());
+
+        // map version information
+        VersionInformationContainerDto versionInformationContainerDto = new VersionInformationContainerDto();
+        versionInformationContainerDto.setVersionInformation(versionList);
+        versionInformationContainerDto.setPage(pageDto);
+
+        LOG.debug("[VersionService][listVersionInformation] List versions in service finished.");
+        return versionInformationContainerDto;
+    }
+
+    public Page<VersionEntity> listVersionEntities(VersionInformationDto versionInformationDto, Pageable pageable) {
+        LOG.debug("[VersionService][listVersionEntities] List version entities in service started.");
         // create query and execute database statement
         Page<VersionEntity> pagedResult = versionRepository.findAll((Specification<VersionEntity>) (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
@@ -110,30 +145,40 @@ public class VersionService {
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         }, pageable);
 
-        // map data to DTO
-        List<VersionInformationDto> versionList = new ArrayList<>();
-        if (!pagedResult.isEmpty()) {
-            VersionInformationDto version;
-            for (VersionEntity versionEntity : pagedResult.getContent()) {
-                version = new VersionInformationDto();
-                BeanUtils.copyProperties(versionEntity, version);
-                versionList.add(version);
-            }
+        LOG.debug("[VersionService][listVersionEntities] List version entities in service finished.");
+        return pagedResult;
+    }
+
+    /**
+     * Resolve dependencies by artifact, group and version.
+     *
+     * @param versionInformationDto     Request object
+     * @param versionEntity             Version entity to store
+     * @return                          version entity to store with dependencies
+     */
+    public VersionEntity resolveDependencies(VersionInformationDto versionInformationDto, VersionEntity versionEntity) {
+        LOG.debug("[VersionService][resolveDependencies] Resolve version dependencies service started.");
+        if (versionInformationDto.getDependencies() != null) {
+            versionEntity.setDependencies(new ArrayList<>());
+
+            versionInformationDto.getDependencies().forEach(artifactEntry -> {
+                ArtifactDto artifactFilter = new ArtifactDto();
+                artifactFilter.setArtifactId(artifactEntry.getArtifactId());
+                artifactFilter.setGroupId(artifactEntry.getGroupId());
+                artifactFilter.setVersion(artifactEntry.getVersion());
+
+                VersionInformationDto filter = new VersionInformationDto();
+                filter.setArtifact(artifactFilter);
+
+                Page<VersionEntity> versionEntities = listVersionEntities(filter, null);
+                if (versionEntities != null && versionEntities.hasContent()) {
+                    VersionEntity dependencyVersionEntity = versionEntities.getContent().get(0);
+                    versionEntity.getDependencies().add(dependencyVersionEntity);
+                }
+            });
         }
 
-        // map pages
-        PageDto pageDto = new PageDto();
-        pageDto.setTotalElements(pagedResult.getTotalElements());
-        pageDto.setTotalPages(pagedResult.getTotalPages());
-        pageDto.setCurrentPage(1 + pagedResult.getNumber());
-        pageDto.setNumberOfElements(pagedResult.getNumberOfElements());
-
-        // map version information
-        VersionInformationContainerDto versionInformationContainerDto = new VersionInformationContainerDto();
-        versionInformationContainerDto.setVersionInformation(versionList);
-        versionInformationContainerDto.setPage(pageDto);
-
-        LOG.debug("[VersionService][listVersionInformation] List versions in service finished.");
-        return versionInformationContainerDto;
+        LOG.debug("[VersionService][resolveDependencies] Resolve version dependencies service finished.");
+        return versionEntity;
     }
 }
