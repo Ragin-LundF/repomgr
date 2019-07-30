@@ -143,7 +143,7 @@ paths:
       tags:
         - "user"
       summary: "Add a new user"
-      description: "Add a new user or prject"
+      description: "Add a new user or project"
       operationId: "storeUser"
       consumes:
         - "application/json"
@@ -152,7 +152,7 @@ paths:
       parameters:
         - in: "body"
           name: "body"
-          description: "User informations to store"
+          description: "User information to store"
           required: true
           schema:
             $ref: "#/definitions/User"
@@ -339,7 +339,7 @@ definitions:
     description: "Response container object for VersionInformation lists"
     type: object
     properties:
-      versionInformations:
+      versionInformation:
         type: array
         items:
           $ref: '#/definitions/VersionInformation'
@@ -347,7 +347,7 @@ definitions:
         $ref: '#/definitions/Page'
 
   UserResponse:
-    description: "Repsonse object for user requests, that contains the userId and the valid-state."
+    description: "Response object for user requests, that contains the userId and the valid-state."
     required:
       - valid
       - userId

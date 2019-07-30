@@ -130,7 +130,7 @@ public class VersionService {
 
         // map version information
         VersionInformationContainerDto versionInformationContainerDto = new VersionInformationContainerDto();
-        versionInformationContainerDto.setVersionInformations(versionList);
+        versionInformationContainerDto.setVersionInformation(versionList);
         versionInformationContainerDto.setPage(pageDto);
 
         LOG.debug("[VersionService][listVersionInformation] List versions in service finished.");

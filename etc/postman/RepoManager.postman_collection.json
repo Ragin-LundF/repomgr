@@ -13,10 +13,6 @@
 				},
 				"method": "GET",
 				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
 					"raw": "http://localhost:9090/actuator/health",
 					"protocol": "http",
@@ -164,10 +160,10 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"username\": \"admin\",\n\t\"password\": \"password\"\n}"
+					"raw": "{\r\n  \"projectName\": \"MyProject\",\r\n  \"branch\": \"master\",\r\n  \"artifact\": {\r\n    \"groupId\": \"com.project\",\r\n    \"artifactId\": \"MyLibrary\",\r\n    \"version\": \"1.0.0\"\r\n  },\r\n  \"repositoryUrl\": \"https://github.com/Ragin-LundF/repomgr\",\r\n  \"creationDate\": \"2019-03-02T20:30:35.420+0000\",\r\n  \"type\": \"LIBRARY\",\r\n  \"latestVersion\": true,\r\n  \"description\": \"# RepoManager # Dependencies and version management tool. You can also use Markdown here.\"\r\n}"
 				},
 				"url": {
-					"raw": "http://localhost:9090/v1/authentication/generate-token",
+					"raw": "http://localhost:9090/v1/repositories",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -175,8 +171,7 @@
 					"port": "9090",
 					"path": [
 						"v1",
-						"authentication",
-						"generate-token"
+						"repositories"
 					]
 				}
 			},

@@ -7,15 +7,15 @@ import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class VersionInformationContainerDto {
-    private List<VersionInformationDto> versionInformations;
+    private List<VersionInformationDto> versionInformation;
     private PageDto page;
 
-    public List<VersionInformationDto> getVersionInformations() {
-        return versionInformations;
+    public List<VersionInformationDto> getVersionInformation() {
+        return versionInformation;
     }
 
-    public void setVersionInformations(List<VersionInformationDto> versionInformations) {
-        this.versionInformations = versionInformations;
+    public void setVersionInformation(List<VersionInformationDto> versionInformation) {
+        this.versionInformation = versionInformation;
     }
 
     public PageDto getPage() {
