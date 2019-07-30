@@ -17,11 +17,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-import javax.persistence.criteria.Subquery;
+import javax.persistence.criteria.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,6 +43,7 @@ public class VersionService {
      * @param versionInformationDto Version information DTO
      * @return ResponseDto with status and messages, if something failed.
      */
+    @Transactional
     public ResponseDto pushNewVersion(VersionInformationDto versionInformationDto) {
         LOG.debug("[VersionService][pushNewVersion] Push new version in service started.");
         ResponseDto responseDto = new ResponseDto(false);
@@ -108,6 +108,13 @@ public class VersionService {
         return versionInformationContainerDto;
     }
 
+    /**
+     * List version entities from database
+     *
+     * @param versionInformationDto VersionInformationDto filter
+     * @param pageable              Paging
+     * @return                      Database entity as page
+     */
     public Page<VersionEntity> listVersionEntities(VersionInformationDto versionInformationDto, Pageable pageable) {
         LOG.debug("[VersionService][listVersionEntities] List version entities in service started.");
         // create query and execute database statement
@@ -161,7 +168,7 @@ public class VersionService {
         if (versionInformationDto.getDependencies() != null) {
             versionEntity.setDependencies(new ArrayList<>());
 
-            versionInformationDto.getDependencies().forEach(artifactEntry -> {
+            for (ArtifactDto artifactEntry : versionInformationDto.getDependencies()) {
                 ArtifactDto artifactFilter = new ArtifactDto();
                 artifactFilter.setArtifactId(artifactEntry.getArtifactId());
                 artifactFilter.setGroupId(artifactEntry.getGroupId());
@@ -170,12 +177,12 @@ public class VersionService {
                 VersionInformationDto filter = new VersionInformationDto();
                 filter.setArtifact(artifactFilter);
 
-                Page<VersionEntity> versionEntities = listVersionEntities(filter, null);
+                Page<VersionEntity> versionEntities = listVersionEntities(filter, Pageable.unpaged());
                 if (versionEntities != null && versionEntities.hasContent()) {
                     VersionEntity dependencyVersionEntity = versionEntities.getContent().get(0);
                     versionEntity.getDependencies().add(dependencyVersionEntity);
                 }
-            });
+            }
         }
 
         LOG.debug("[VersionService][resolveDependencies] Resolve version dependencies service finished.");

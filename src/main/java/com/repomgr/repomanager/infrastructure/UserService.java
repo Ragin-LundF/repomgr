@@ -14,6 +14,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.util.Collections;
@@ -68,6 +69,7 @@ public class UserService implements UserDetailsService {
      * @param userDto   filled userDto object
      * @return          userDto object with new userId.
      */
+    @Transactional
     public UserDto storeUser(UserDto userDto) {
         LOG.debug("[UserService][storeUser] Store user in service started.");
         UserEntity dbUser = userRepository.findFirstByUsername(userDto.getUsername());
@@ -95,6 +97,7 @@ public class UserService implements UserDetailsService {
      * @param userId        userId of an user (UUID)
      * @return              true if successful, false if failed.
      */
+    @Transactional
     public boolean deleteByUserId(String userId) {
         LOG.debug("[UserService][deleteByUserId] Delete user in service started.");
         boolean successful = false;
@@ -125,6 +128,7 @@ public class UserService implements UserDetailsService {
      * @param userDto   UserDto with userId and new password.
      * @return          UserDto with userId and valid state if successful
      */
+    @Transactional
     public UserDto updatePassword(UserDto userDto) {
         LOG.debug("[UserService][updatePassword] Update password in service started.");
         UserEntity userEntity = userRepository.findUserEntityByUserId(userDto.getUserId());
