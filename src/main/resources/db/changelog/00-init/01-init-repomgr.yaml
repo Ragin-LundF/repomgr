@@ -64,7 +64,7 @@ databaseChangeLog:
               - column:
                   name: TYPE
                   type: VARCHAR(255)
-                  contraints:
+                  constraints:
                     nullable: false
                   remarks: 'Type of the artifact like WIDGET, LIBRARY...'
 

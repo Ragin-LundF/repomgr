@@ -115,6 +115,7 @@ public class RepoManagerApplicationTests {
         versionInformationDto.setProjectName("MyProject");
         versionInformationDto.setRepositoryUrl("http://domain.com/repo");
         versionInformationDto.setCreationDate(new Date());
+        versionInformationDto.setType("LIBRARY");
 
         ObjectMapper objectMapper = new ObjectMapper();
         String body = objectMapper.writeValueAsString(versionInformationDto);
@@ -129,7 +130,7 @@ public class RepoManagerApplicationTests {
 
         resultActions
                 .andExpect(status().isCreated())
-                .andExpect(content().string(containsString("\"status\":true")));
+                .andExpect(content().string(containsString("\"_status\":true")));
     }
 
     /**

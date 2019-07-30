@@ -1,4 +1,4 @@
-# repo_version
+# repo_dependency
 databaseChangeLog:
   - changeSet:
       id: 01-init-repomgr-join-01
@@ -12,10 +12,14 @@ databaseChangeLog:
               - column:
                   name: ARTIFACT_ID
                   type: BIGSERIAL
+                  constraints:
+                    nullable: false
                   remarks: 'ID of artifact'
               - column:
                   name: DEPENDENCY_ID
                   type: BIGSERIAL
+                  constraints:
+                    nullable: false
                   remarks: 'ID of dependency'
 
         - addPrimaryKey:

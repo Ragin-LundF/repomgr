@@ -48,6 +48,7 @@ public class VersionService {
         ResponseDto responseDto = new ResponseDto(false);
         VersionEntity versionEntity = new VersionEntity();
         BeanUtils.copyProperties(versionInformationDto, versionEntity);
+        BeanUtils.copyProperties(versionInformationDto.getArtifact(), versionEntity);
 
         VersionEntity savedEntity = versionRepository.save(versionEntity);
 
