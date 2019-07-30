@@ -137,6 +137,10 @@ paths:
           description: "successful authenticated and token generated"
           schema:
             $ref: '#/definitions/Token'
+        401:
+          description: "Unauthorized. Wrong credentials"
+          schema:
+            $ref: '#/definitions/Response'
 
   /users:
     post:
@@ -410,19 +414,21 @@ definitions:
         example: "my-perfect-password"
   Token:
     description: "Represents the token as a result object to the client."
-    required:
-      - token
-    type: object
-    properties:
-      token:
-        description: "Represents the JWT token. This token must be set tot all requests against secured endpoints as a part of a Bearer token at the Authorization header."
-        type: "string"
-        maxLength: 255
-        example: "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInNjb3BlcyI6W3siYXV0aG9yaXR5IjoiUk9MRV9BRE1JTiJ9XSwiaXNzIjoiUmVwb01hbmFnZXIiLCJpYXQiOjE1NDkwNjE2MTgsImV4cCI6MTU0OTA2NTIyOX0.n0CK66KFTA81XDgGF89HzIDEfuvdwUOXm1put75QiZo"
-      userId:
-        description: "User ID of the current user"
-        type: string
-        example: "5c6a1223-076b-4bc0-b0b7-20b0da0e23fd"
+    allOf:
+      - $ref: '#/definitions/Response'
+      - type: object
+        required:
+          - token
+        properties:
+          token:
+            description: "Represents the JWT token. This token must be set tot all requests against secured endpoints as a part of a Bearer token at the Authorization header."
+            type: "string"
+            maxLength: 255
+            example: "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInNjb3BlcyI6W3siYXV0aG9yaXR5IjoiUk9MRV9BRE1JTiJ9XSwiaXNzIjoiUmVwb01hbmFnZXIiLCJpYXQiOjE1NDkwNjE2MTgsImV4cCI6MTU0OTA2NTIyOX0.n0CK66KFTA81XDgGF89HzIDEfuvdwUOXm1put75QiZo"
+          userId:
+            description: "User ID of the current user"
+            type: string
+            example: "5c6a1223-076b-4bc0-b0b7-20b0da0e23fd"
   Page:
     description: "Page object for list results"
     type: object

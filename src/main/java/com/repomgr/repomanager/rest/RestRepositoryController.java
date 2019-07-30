@@ -11,12 +11,14 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import javax.print.attribute.standard.Media;
 import javax.validation.constraints.Max;
 
 /**
@@ -40,7 +42,10 @@ public class RestRepositoryController {
      * @return                          Created (success) or Bad Request (error)
      */
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
-    @PostMapping
+    @PostMapping(
+            produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE
+    )
     public ResponseEntity<ResponseDto> pushNewVersion(@RequestBody VersionInformationDto versionInformationDto) {
         ResponseEntity<ResponseDto> response;
         LOG.debug("[RestRepositoryController][pushNewVersion] Push new version request accepted.");
@@ -57,7 +62,11 @@ public class RestRepositoryController {
         return response;
     }
 
-    @PostMapping("/search")
+    @PostMapping(
+            path = "/search",
+            produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE
+    )
     public ResponseEntity<VersionInformationContainerDto> listVersions(
             @RequestBody VersionInformationDto versionInformationDto,
             @Nullable @RequestParam String sortField,

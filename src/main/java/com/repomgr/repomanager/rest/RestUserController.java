@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
@@ -37,7 +38,10 @@ public class RestUserController {
      * @return              ResponseEntity with user information like userId if successful. Else it returns a ResponseDto message.
      */
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    @PostMapping
+    @PostMapping(
+            produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE
+    )
     public ResponseEntity storeUser(@RequestBody UserDto userDto) {
         LOG.debug("[RestUserController][storeUser] Store user request accepted.");
         ResponseEntity response;
@@ -60,7 +64,11 @@ public class RestUserController {
      * @return                  updated user info (userId and valid) or ResponseDto message for error handling
      */
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    @PutMapping("/{userId}/password")
+    @PutMapping(
+            path = "/{userId}/password",
+            produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE
+    )
     public ResponseEntity updateUserPassword(@PathVariable("userId") String userId, @RequestBody PasswordDto passwordDto) {
         LOG.debug("[RestUserController][updateUserPassword] Update user password request accepted.");
         ResponseEntity response;
@@ -88,7 +96,9 @@ public class RestUserController {
      * @return              No Content (success) or BadRequest ResponseEntity
      */
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    @DeleteMapping("/{userId}")
+    @DeleteMapping(
+            path = "/{userId}"
+    )
     public ResponseEntity deleteUser(@PathVariable("userId") String userId) {
         LOG.debug("[RestUserController][deleteUser] Delete user request accepted.");
         ResponseEntity response;
