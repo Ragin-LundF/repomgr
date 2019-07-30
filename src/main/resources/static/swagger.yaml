@@ -265,6 +265,31 @@ definitions:
         minLength: 1
         maxLength: 255
         example: "master"
+      artifact:
+        $ref: '#/definitions/Artifact'
+      dependencies:
+        description: "Shows Dependencies to other artifacts. Mostly this should be used for application dependencies."
+        type: array
+        items:
+          $ref: '#/definitions/Artifact'
+      version:
+        description: "Artifact version"
+        type: string
+        minLength: 1
+        maxLength: 20
+        example: "1.0.0"
+      latestVersion:
+        description: "If true, only the latest versions will be returned. *This flag can only be used while search filtering.*"
+        type: boolean
+        example: true
+      type:
+        description: "Defines the type of the package, for example. FRONTEND, BACKEND, JS-LIBRARY, BACKEND-LIBRARY"
+        type: string
+
+  Artifact:
+    description: "Contains information about an artifact in maven-style"
+    type: object
+    properties:
       groupId:
         description: "Artifact groupId"
         type: string
@@ -277,16 +302,6 @@ definitions:
         minLength: 1
         maxLength: 100
         example: "MyLibrary"
-      version:
-        description: "Artifact version"
-        type: string
-        minLength: 1
-        maxLength: 20
-        example: "1.0.0"
-      latestVersion:
-        description: "If true, only the latest versions will be returned. *This flag can only be used while search filtering.*"
-        type: boolean
-        example: true
 
   VersionInformation:
     description: "Contains informations about the artifacts."
@@ -311,6 +326,13 @@ definitions:
             type: string
             format: date-time
             example: "2019-02-02T11:34:35.470+0000"
+          description:
+            description: "(optional) Description of the module. Can contain markdown syntax, which will be parsed to HTML."
+            type: string
+            example: '# RepoManager #
+              Dependencies and version management tool.
+              You can also use Markdown here.'
+
 
   VersionInformationContainer:
     description: "Response container object for VersionInformation lists"
@@ -442,7 +464,7 @@ definitions:
     description: "Response container object with status."
     type: object
     properties:
-      status:
+      _status:
         description: "If true, then the request was successful."
         type: boolean
         example: true

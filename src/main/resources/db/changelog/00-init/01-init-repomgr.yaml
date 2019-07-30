@@ -6,53 +6,53 @@ databaseChangeLog:
       comment: 'Initial Import of repo_version table'
       changes:
         - createTable:
-            tableName: repo_version
+            tableName: REPO_VERSION
             remarks: 'Contains version, artifact and branch locations'
             columns:
               - column:
                   autoIncrement: true
                   constraints:
                     primaryKey: true
-                    primaryKeyName: rm_id_pkey
-                  name: id
+                    primaryKeyName: RM_ID_PKEY
+                  name: ID
                   type: BIGSERIAL
                   remarks: 'ID / Primary Key'
               - column:
-                  name: project_name
+                  name: PROJECT_NAME
                   type: VARCHAR(100)
                   constraints:
                     nullable: false
                   remarks: 'name of the project which generates the artifact'
               - column:
-                  name: branch
+                  name: BRANCH
                   type: VARCHAR(255)
                   constraints:
                     nullable: false
                   remarks: 'name of the branch (mostly develop or master)'
               - column:
-                  name: group_id
+                  name: GROUP_ID
                   type: VARCHAR(100)
                   constraints:
                     nullable: false
                   remarks: 'groupid of the artifact'
               - column:
-                  name: artifact_id
+                  name: ARTIFACT_ID
                   type: VARCHAR(100)
                   constraints:
                     nullable: false
                   remarks: 'artifactid of the artifact'
               - column:
-                  name: version
+                  name: VERSION
                   type: VARCHAR(20)
                   constraints:
                     nullable: false
                   remarks: 'version of the artifact'
               - column:
-                  name: repository_url
+                  name: REPOSITORY_URL
                   type: VARCHAR(512)
                   remarks: 'url of the repository'
               - column:
-                  name: creation_date
+                  name: CREATION_DATE
                   type: TIMESTAMP(6) WITHOUT TIME ZONE
                   constraints:
                     nullable: false
@@ -60,36 +60,36 @@ databaseChangeLog:
 
         # Index Project name
         - createIndex:
-            tableName: repo_version
-            indexName: rm_projectname_index
+            tableName: REPO_VERSION
+            indexName: RM_PROJECTNAME_IDX
             remarks: 'Index of project name'
             columns:
               - column:
-                  name: project_name
+                  name: PROJECT_NAME
 
         # Index Branch name
         - createIndex:
-            tableName: repo_version
-            indexName: rm_branch_index
+            tableName: REPO_VERSION
+            indexName: RM_BRANCH_IDX
             remarks: 'Index of the branch'
             columns:
               - column:
-                  name: branch
+                  name: BRANCH
 
         # Index GroupId
         - createIndex:
-            tableName: repo_version
-            indexName: rm_groupid_index
+            tableName: REPO_VERSION
+            indexName: RM_GROUPID_IDX
             remarks: 'Index of the groupId'
             columns:
               - column:
-                  name: group_id
+                  name: GROUP_ID
 
         # Index ArtifactId
         - createIndex:
-            tableName: repo_version
-            indexName: rm_artifactid_index
+            tableName: REPO_VERSION
+            indexName: RM_ARTIFACTID_IDX
             remarks: 'Index of the artifactId'
             columns:
               - column:
-                  name: artifact_id
+                  name: ARTIFACT_ID

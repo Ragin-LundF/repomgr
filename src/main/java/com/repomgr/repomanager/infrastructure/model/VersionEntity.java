@@ -4,25 +4,25 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
-@Entity(name = "repo_version")
+@Entity(name = "REPO_VERSION")
 public class VersionEntity implements Serializable {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
-    @Column(name = "id", length = 50, nullable = false)
+    @Column(name = "ID", length = 50, nullable = false)
     private Long id;
-    @Column(name = "project_name", length = 100, nullable = false)
+    @Column(name = "PROJECT_NAME", length = 100, nullable = false)
     private String projectName;
-    @Column(name = "branch", length = 255, nullable = false)
+    @Column(name = "BRANCH", length = 255, nullable = false)
     private String branch;
-    @Column(name = "group_id", length = 100, nullable = false)
+    @Column(name = "GROUP_ID", length = 100, nullable = false)
     private String groupId;
-    @Column(name = "artifact_id", length = 100, nullable = false)
+    @Column(name = "ARTIFACT_ID", length = 100, nullable = false)
     private String artifactId;
-    @Column(name = "version", length = 20, nullable = false)
+    @Column(name = "VERSION", length = 20, nullable = false)
     private String version;
-    @Column(name = "repository_url", length = 512)
+    @Column(name = "REPOSITORY_URL", length = 512)
     private String repositoryUrl;
-    @Column(name = "creation_date", nullable = false)
+    @Column(name = "CREATION_DATE", nullable = false)
     private Date creationDate;
 
     public Long getId() {

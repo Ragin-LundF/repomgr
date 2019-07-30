@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ResponseDto {
+    @JsonProperty(value = "_status")
     private boolean status;
     @JsonProperty(value = "_message")
     private MessageDto message;
