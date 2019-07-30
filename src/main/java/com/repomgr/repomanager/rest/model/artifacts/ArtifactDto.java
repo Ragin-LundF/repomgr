@@ -1,10 +1,13 @@
-package com.repomgr.repomanager.rest.model;
+package com.repomgr.repomanager.rest.model.artifacts;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+/**
+ * Represents an artifact maven like with a group and a artifactId/name
+ */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ArtifactDto {
     @NotNull

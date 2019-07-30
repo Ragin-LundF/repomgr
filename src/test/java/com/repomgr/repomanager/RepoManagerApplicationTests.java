@@ -2,10 +2,10 @@ package com.repomgr.repomanager;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.repomgr.repomanager.constants.Constants;
-import com.repomgr.repomanager.rest.model.PasswordDto;
-import com.repomgr.repomanager.rest.model.TokenDto;
-import com.repomgr.repomanager.rest.model.UserDto;
-import com.repomgr.repomanager.rest.model.VersionInformationDto;
+import com.repomgr.repomanager.rest.model.user.PasswordDto;
+import com.repomgr.repomanager.rest.model.user.TokenDto;
+import com.repomgr.repomanager.rest.model.user.UserDto;
+import com.repomgr.repomanager.rest.model.artifacts.VersionInformationDto;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;

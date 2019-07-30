@@ -1,9 +1,9 @@
 package com.repomgr.repomanager.rest;
 
 import com.repomgr.repomanager.infrastructure.VersionService;
-import com.repomgr.repomanager.rest.model.ResponseDto;
-import com.repomgr.repomanager.rest.model.VersionInformationContainerDto;
-import com.repomgr.repomanager.rest.model.VersionInformationDto;
+import com.repomgr.repomanager.rest.model.common.ResponseDto;
+import com.repomgr.repomanager.rest.model.artifacts.VersionInformationContainerDto;
+import com.repomgr.repomanager.rest.model.artifacts.VersionInformationDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;

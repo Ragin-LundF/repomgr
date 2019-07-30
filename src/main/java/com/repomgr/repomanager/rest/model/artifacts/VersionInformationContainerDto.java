@@ -1,6 +1,7 @@
-package com.repomgr.repomanager.rest.model;
+package com.repomgr.repomanager.rest.model.artifacts;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.repomgr.repomanager.rest.model.common.PageDto;
 
 import java.util.List;
 

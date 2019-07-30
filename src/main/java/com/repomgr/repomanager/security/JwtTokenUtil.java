@@ -2,7 +2,7 @@ package com.repomgr.repomanager.security;
 
 import com.repomgr.repomanager.config.RepoManagerProperties;
 import com.repomgr.repomanager.infrastructure.UserService;
-import com.repomgr.repomanager.rest.model.UserDto;
+import com.repomgr.repomanager.rest.model.user.UserDto;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;

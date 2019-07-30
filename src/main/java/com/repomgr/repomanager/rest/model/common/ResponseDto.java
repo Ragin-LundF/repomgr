@@ -1,7 +1,8 @@
-package com.repomgr.repomanager.rest.model;
+package com.repomgr.repomanager.rest.model.common;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.repomgr.repomanager.rest.model.common.MessageDto;
 
 /**
  * Response Object for common messages and a status, if action was successful (valid = true) or if action failed (valid = false)

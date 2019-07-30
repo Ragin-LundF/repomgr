@@ -57,6 +57,16 @@ databaseChangeLog:
                   constraints:
                     nullable: false
                   remarks: 'Creation date of the artifact'
+              - column:
+                  name: DESCRIPTION
+                  type: CLOB
+                  remarks: 'optional description of the artifact'
+              - column:
+                  name: TYPE
+                  type: VARCHAR(255)
+                  contraints:
+                    nullable: false
+                  remarks: 'Type of the artifact like WIDGET, LIBRARY...'
 
         # Index Project name
         - createIndex:
@@ -93,3 +103,12 @@ databaseChangeLog:
             columns:
               - column:
                   name: ARTIFACT_ID
+
+        # Index Type
+        - createIndex:
+            tableName: REPO_VERSION
+            indexName: RM_TYPE_IDX
+            remarks: 'Index of the type of the artifact'
+            columns:
+              - column:
+                  name: TYPE

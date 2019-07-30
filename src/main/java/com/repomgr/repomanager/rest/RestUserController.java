@@ -1,10 +1,10 @@
 package com.repomgr.repomanager.rest;
 
 import com.repomgr.repomanager.infrastructure.UserService;
-import com.repomgr.repomanager.rest.model.MessageDto;
-import com.repomgr.repomanager.rest.model.PasswordDto;
-import com.repomgr.repomanager.rest.model.ResponseDto;
-import com.repomgr.repomanager.rest.model.UserDto;
+import com.repomgr.repomanager.rest.model.common.MessageDto;
+import com.repomgr.repomanager.rest.model.user.PasswordDto;
+import com.repomgr.repomanager.rest.model.common.ResponseDto;
+import com.repomgr.repomanager.rest.model.user.UserDto;
 import org.owasp.encoder.Encode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

@@ -1,4 +1,4 @@
-package com.repomgr.repomanager.rest.model;
+package com.repomgr.repomanager.rest.model.artifacts;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
@@ -30,6 +30,7 @@ public class VersionInformationDto {
     private Date creationDate;
     private Boolean latestVersion;
     private String description;
+    @NotNull
     private String type;
 
     public String getProjectName() {

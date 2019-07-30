@@ -2,7 +2,7 @@ package com.repomgr.repomanager.infrastructure;
 
 import com.repomgr.repomanager.infrastructure.model.UserEntity;
 import com.repomgr.repomanager.infrastructure.repository.UserRepository;
-import com.repomgr.repomanager.rest.model.UserDto;
+import com.repomgr.repomanager.rest.model.user.UserDto;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

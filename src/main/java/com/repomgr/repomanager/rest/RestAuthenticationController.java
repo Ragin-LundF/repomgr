@@ -1,8 +1,8 @@
 package com.repomgr.repomanager.rest;
 
 import com.repomgr.repomanager.infrastructure.UserService;
-import com.repomgr.repomanager.rest.model.TokenDto;
-import com.repomgr.repomanager.rest.model.UserDto;
+import com.repomgr.repomanager.rest.model.user.TokenDto;
+import com.repomgr.repomanager.rest.model.user.UserDto;
 import com.repomgr.repomanager.security.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

@@ -24,6 +24,9 @@ public class VersionEntity implements Serializable {
     private String repositoryUrl;
     @Column(name = "CREATION_DATE", nullable = false)
     private Date creationDate;
+    @Column(name = "DESCRIPTION", nullable = true)
+    private String description;
+    @Column(name = "TYPE", nullable = false)
 
     public Long getId() {
         return id;
@@ -87,5 +90,13 @@ public class VersionEntity implements Serializable {
 
     public void setCreationDate(Date creationDate) {
         this.creationDate = creationDate;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }
