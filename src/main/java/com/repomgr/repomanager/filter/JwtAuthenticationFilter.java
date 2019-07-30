@@ -6,6 +6,8 @@ import com.repomgr.repomanager.security.JwtTokenUtil;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.SignatureException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -44,11 +46,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
      * @param request  HttpRequests
      * @param response HttpResponse
      * @param chain    FilterChain
-     * @throws IOException
-     * @throws ServletException
+     * @throws IOException      io exception
+     * @throws ServletException servlet exception
      */
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
+        logger.debug("[JwtAuthenticationFilter][doFilterInternal] Filter execution started");
         if (!isWhitelistUri(request.getRequestURI())) {
             String header = request.getHeader(repoManagerProperties.getSecurity().getHeaderName());
             String token = readTokenFromHeader(header);
@@ -67,6 +70,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         chain.doFilter(request, response);
+        logger.debug("[JwtAuthenticationFilter][doFilterInternal] Filter execution finished");
     }
 
     /**
@@ -76,12 +80,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
      * @return          Token only or null
      */
     private String readTokenFromHeader(String header) {
+        logger.debug("[JwtAuthenticationFilter][readTokenFromHeader] Read token from header started.");
+        String token = null;
         if (StringUtils.startsWithIgnoreCase(header, TOKEN_PREFIX)) {
-            return header.replace(TOKEN_PREFIX, "").trim();
+            token = header.replace(TOKEN_PREFIX, "").trim();
         } else {
             logger.error("Can not find token. Please add a Bearer token with the prefix [" + TOKEN_PREFIX + "].");
         }
-        return null;
+
+        logger.debug("[JwtAuthenticationFilter][readTokenFromHeader] Read token from header finished.");
+        return token;
     }
 
     /**
@@ -93,9 +101,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
      * @return          Username or null
      */
     private String readUsernameFromToken(String token) {
+        logger.debug("[JwtAuthenticationFilter][readUsernameFromToken] Read username from token started.");
+        String username = null;
         if (! StringUtils.isEmpty(token)) {
             try {
-                return jwtTokenUtil.lookupClaim(token, Claims::getSubject);
+                username = jwtTokenUtil.lookupClaim(token, Claims::getSubject);
             } catch (IllegalArgumentException e) {
                 logger.error("Can not read username from token.", e);
             } catch (ExpiredJwtException e) {
@@ -107,7 +117,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             logger.error("No token found.");
         }
 
-        return null;
+        logger.debug("[JwtAuthenticationFilter][readUsernameFromToken] Read username from token finished.");
+        return username;
     }
 
     /**
@@ -116,11 +127,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
      * @see Constants#NO_AUTH_URLS
      */
     private boolean isWhitelistUri(String uri) {
+        logger.debug("[JwtAuthenticationFilter][isWhitelistUri] Whitelist check started.");
+        boolean whitelist = false;
         for (String whitelistUri : Constants.NO_AUTH_URLS) {
             if (uri.contains(whitelistUri)) {
-                return true;
+                whitelist = true;
+                break;
             }
         }
-        return false;
+        logger.debug("[JwtAuthenticationFilter][isWhitelistUri] Whitelist check finished.");
+        return whitelist;
     }
 }

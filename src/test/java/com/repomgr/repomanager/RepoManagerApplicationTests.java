@@ -2,6 +2,7 @@ package com.repomgr.repomanager;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.repomgr.repomanager.constants.Constants;
+import com.repomgr.repomanager.rest.model.artifacts.ArtifactDto;
 import com.repomgr.repomanager.rest.model.user.PasswordDto;
 import com.repomgr.repomanager.rest.model.user.TokenDto;
 import com.repomgr.repomanager.rest.model.user.UserDto;
@@ -101,11 +102,15 @@ public class RepoManagerApplicationTests {
 
     @Test
     public void testStoreNewVersion() throws Exception {
+        // create artifact
+        ArtifactDto artifactDto = new ArtifactDto();
+        artifactDto.setGroupId("com.repomgr");
+        artifactDto.setArtifactId("RepoAdmin");
+        artifactDto.setVersion("1.0.0");
+
         // create new version object
         VersionInformationDto versionInformationDto = new VersionInformationDto();
-        versionInformationDto.setGroupId("com.repomgr");
-        versionInformationDto.setArtifactId("RepoAdmin");
-        versionInformationDto.setVersion("1.0.0");
+        versionInformationDto.setArtifact(artifactDto);
         versionInformationDto.setBranch("master");
         versionInformationDto.setProjectName("MyProject");
         versionInformationDto.setRepositoryUrl("http://domain.com/repo");

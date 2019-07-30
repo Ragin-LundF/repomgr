@@ -3,6 +3,8 @@ package com.repomgr.repomanager.infrastructure;
 import com.repomgr.repomanager.infrastructure.model.UserEntity;
 import com.repomgr.repomanager.infrastructure.repository.UserRepository;
 import com.repomgr.repomanager.rest.model.user.UserDto;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -27,6 +29,7 @@ import java.util.UUID;
  */
 @Service(value = "userService")
 public class UserService implements UserDetailsService {
+    private static final Logger LOG = LoggerFactory.getLogger(UserService.class);
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
@@ -45,14 +48,17 @@ public class UserService implements UserDetailsService {
      * @return          filled userDto from database
      */
     public UserDto lookupUser(UserDto userDto) {
+        LOG.debug("[UserService][lookupUser] Lookup user in service started.");
+
         UserEntity userEntity = userRepository.findFirstByUsername(userDto.getUsername());
         if (! StringUtils.isEmpty(userEntity.getUsername()) && ! StringUtils.isEmpty(userEntity.getId())) {
             BeanUtils.copyProperties(userEntity, userDto);
             userDto.setValid(true);
-            return userDto;
+        } else {
+            userDto.setValid(false);
         }
-        userDto.setValid(false);
 
+        LOG.debug("[UserService][lookupUser] Lookup user in service finished.");
         return userDto;
     }
 
@@ -63,6 +69,7 @@ public class UserService implements UserDetailsService {
      * @return          userDto object with new userId.
      */
     public UserDto storeUser(UserDto userDto) {
+        LOG.debug("[UserService][storeUser] Store user in service started.");
         UserEntity dbUser = userRepository.findFirstByUsername(userDto.getUsername());
         if (dbUser == null) {
             UserEntity userEntity = new UserEntity();
@@ -72,12 +79,13 @@ public class UserService implements UserDetailsService {
             userEntity = userRepository.save(userEntity);
 
             if (!StringUtils.isEmpty(userEntity.getId())) {
-                return new UserDto(true, userEntity.getUserId());
+                userDto = new UserDto(true, userEntity.getUserId());
             }
+        } else {
+            userDto.setValid(false);
         }
 
-        userDto.setValid(false);
-
+        LOG.debug("[UserService][storeUser] Store user in service finished.");
         return userDto;
     }
 
@@ -88,12 +96,16 @@ public class UserService implements UserDetailsService {
      * @return              true if successful, false if failed.
      */
     public boolean deleteByUserId(String userId) {
+        LOG.debug("[UserService][deleteByUserId] Delete user in service started.");
+        boolean successful = false;
         UserEntity userEntity = userRepository.findUserEntityByUserId(userId);
         if (userEntity != null && ! StringUtils.isEmpty(userEntity.getId())) {
             userRepository.deleteById(userEntity.getId());
-            return true;
+            successful = true;
         }
-        return false;
+
+        LOG.debug("[UserService][deleteByUserId] Delete user in service finished.");
+        return successful;
     }
 
     /**
@@ -103,6 +115,7 @@ public class UserService implements UserDetailsService {
      * @return      List of granted authorities
      */
     public List<SimpleGrantedAuthority> lookupAuthority(String role) {
+        LOG.debug("[UserService][lookupAuthority] Lookup authority in service executed.");
         return Collections.singletonList(new SimpleGrantedAuthority(role));
     }
 
@@ -113,15 +126,19 @@ public class UserService implements UserDetailsService {
      * @return          UserDto with userId and valid state if successful
      */
     public UserDto updatePassword(UserDto userDto) {
+        LOG.debug("[UserService][updatePassword] Update password in service started.");
         UserEntity userEntity = userRepository.findUserEntityByUserId(userDto.getUserId());
         if(userEntity != null) {
             userEntity.setPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
             UserEntity updatedUser = userRepository.save(userEntity);
             if (! StringUtils.isEmpty(updatedUser.getId())) {
-                return new UserDto(true, updatedUser.getUserId());
+                userDto = new UserDto(true, updatedUser.getUserId());
             }
+        } else {
+            userDto.setValid(false);
         }
-        userDto.setValid(false);
+
+        LOG.debug("[UserService][updatePassword] Update password in service finished.");
         return userDto;
     }
 
@@ -130,17 +147,21 @@ public class UserService implements UserDetailsService {
      *
      * @param username          username
      * @return                  Spring UserDetails object
-     * @throws UsernameNotFoundException
+     * @throws UsernameNotFoundException no username was found
      */
     @Override
     public UserDetails loadUserByUsername(String username) {
+        LOG.debug("[UserService][loadUserByUsername] Lookup user by username in service started.");
         UserDto userDto = new UserDto();
         userDto.setUsername(username);
         userDto = lookupUser(userDto);
 
         if (userDto == null) {
+            LOG.debug("[UserService][loadUserByUsername] Lookup user by username in service failed.");
             throw new UsernameNotFoundException("Invalid username or password.");
         }
+
+        LOG.debug("[UserService][loadUserByUsername] Lookup user by username in service finished.");
         return new User(userDto.getUsername(), userDto.getPassword(), lookupAuthority(userDto.getRole()));
     }
 }

@@ -1,9 +1,12 @@
 package com.repomgr.repomanager.rest;
 
 import com.repomgr.repomanager.infrastructure.UserService;
+import com.repomgr.repomanager.rest.model.common.ResponseDto;
 import com.repomgr.repomanager.rest.model.user.TokenDto;
 import com.repomgr.repomanager.rest.model.user.UserDto;
 import com.repomgr.repomanager.security.JwtTokenUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/v1/authentication")
 public class RestAuthenticationController {
+    private final static Logger LOG = LoggerFactory.getLogger(RestAuthenticationController.class);
     private final AuthenticationManager authenticationManager;
     private final JwtTokenUtil jwtTokenUtil;
     private final UserService userService;
@@ -37,10 +41,13 @@ public class RestAuthenticationController {
      *
      * @param userDto       Credentials of the user (username, password at the UserDto object)
      * @return              new token for the user
-     * @throws AuthenticationException
+     * @throws AuthenticationException  error while authentication
      */
     @PostMapping(value = "/generate-token")
     public ResponseEntity<TokenDto> generateToken(@RequestBody UserDto userDto) {
+        ResponseEntity<ResponseDto> response;
+        LOG.debug("[RestAuthenticationController][generateToken] Generate token request accepted.");
+
         final Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         userDto.getUsername(),
@@ -51,6 +58,7 @@ public class RestAuthenticationController {
         final UserDto user = userService.lookupUser(userDto);
         final String token = jwtTokenUtil.generateToken(user);
 
+        LOG.debug("[RestAuthenticationController][generateToken] Generate token request finished.");
         return new ResponseEntity<>(new TokenDto(token, userDto.getUserId()), HttpStatus.CREATED);
     }
 }

@@ -3,6 +3,7 @@ package com.repomgr.repomanager.infrastructure.model;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 @Entity(name = "REPO_VERSION")
 public class VersionEntity implements Serializable {
@@ -27,6 +28,14 @@ public class VersionEntity implements Serializable {
     @Column(name = "DESCRIPTION", nullable = true)
     private String description;
     @Column(name = "TYPE", nullable = false)
+    private String type;
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "REPO_DEPENDENCY_JOIN",
+            joinColumns = @JoinColumn(name = "ARTIFACT_ID"),
+            inverseJoinColumns = @JoinColumn(name = "DEPENDENCY_ID")
+    )
+    private List<VersionEntity> dependencies;
 
     public Long getId() {
         return id;
@@ -98,5 +107,21 @@ public class VersionEntity implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public List<VersionEntity> getDependencies() {
+        return dependencies;
+    }
+
+    public void setDependencies(List<VersionEntity> dependencies) {
+        this.dependencies = dependencies;
     }
 }

@@ -4,6 +4,8 @@ import com.repomgr.repomanager.infrastructure.VersionService;
 import com.repomgr.repomanager.rest.model.common.ResponseDto;
 import com.repomgr.repomanager.rest.model.artifacts.VersionInformationContainerDto;
 import com.repomgr.repomanager.rest.model.artifacts.VersionInformationDto;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -23,6 +25,7 @@ import javax.validation.constraints.Max;
 @RestController
 @RequestMapping("/v1/repositories")
 public class RestRepositoryController {
+    private final static Logger LOG = LoggerFactory.getLogger(RestRepositoryController.class);
     private final VersionService versionService;
 
     @Autowired
@@ -39,13 +42,19 @@ public class RestRepositoryController {
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
     @PostMapping
     public ResponseEntity<ResponseDto> pushNewVersion(@RequestBody VersionInformationDto versionInformationDto) {
+        ResponseEntity<ResponseDto> response;
+        LOG.debug("[RestRepositoryController][pushNewVersion] Push new version request accepted.");
+
         ResponseDto responseDto = versionService.pushNewVersion(versionInformationDto);
 
         if (responseDto.isStatus()) {
-            return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
+            response = new ResponseEntity<>(responseDto, HttpStatus.CREATED);
         } else {
-            return new ResponseEntity<>(responseDto, HttpStatus.BAD_REQUEST);
+            response = new ResponseEntity<>(responseDto, HttpStatus.BAD_REQUEST);
         }
+
+        LOG.debug("[RestRepositoryController][pushNewVersion] Push new version request finished.");
+        return response;
     }
 
     @PostMapping("/search")
@@ -56,6 +65,9 @@ public class RestRepositoryController {
             @Nullable @RequestParam Integer page,
             @Nullable @Max(100) @RequestParam Integer size
     ) {
+        ResponseEntity<ResponseDto> response;
+        LOG.debug("[RestRepositoryController][listVersions] List versions request accepted.");
+
         // Paging
         size = (size == null) ? 10 : size;
         page = (page == null) ? 0 : page;
@@ -67,8 +79,9 @@ public class RestRepositoryController {
         }
 
         // get data and return
-        VersionInformationContainerDto versionInformationContainer = versionService.listVersionInformations(versionInformationDto, pageable);
+        VersionInformationContainerDto versionInformationContainer = versionService.listVersionInformation(versionInformationDto, pageable);
 
+        LOG.debug("[RestRepositoryController][listVersions] List versions request finished.");
         return new ResponseEntity<>(versionInformationContainer, HttpStatus.OK);
     }
 }

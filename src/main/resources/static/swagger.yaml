@@ -73,7 +73,7 @@ paths:
         - "repository"
       summary: "List repository data"
       description: "List artifacts at repository with additional filter options"
-      operationId: "listVersionInformations"
+      operationId: "listVersionInformation"
       consumes:
         - "application/json"
       produces:
@@ -272,12 +272,6 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/Artifact'
-      version:
-        description: "Artifact version"
-        type: string
-        minLength: 1
-        maxLength: 20
-        example: "1.0.0"
       latestVersion:
         description: "If true, only the latest versions will be returned. *This flag can only be used while search filtering.*"
         type: boolean
@@ -302,6 +296,12 @@ definitions:
         minLength: 1
         maxLength: 100
         example: "MyLibrary"
+      version:
+        description: "Artifact version"
+        type: string
+        minLength: 1
+        maxLength: 20
+        example: "1.0.0"
 
   VersionInformation:
     description: "Contains information about the artifacts."

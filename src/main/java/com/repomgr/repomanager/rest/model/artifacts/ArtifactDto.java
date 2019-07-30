@@ -16,6 +16,9 @@ public class ArtifactDto {
     @NotNull
     @Size(min = 1, max = 100)
     private String artifactId;
+    @NotNull
+    @Size(min = 1, max = 20)
+    private String version;
 
     public String getGroupId() {
         return groupId;
@@ -33,4 +36,11 @@ public class ArtifactDto {
         this.artifactId = artifactId;
     }
 
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
 }

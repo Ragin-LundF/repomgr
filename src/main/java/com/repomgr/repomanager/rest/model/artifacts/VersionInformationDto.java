@@ -20,9 +20,6 @@ public class VersionInformationDto {
     private String branch;
     @NotNull
     private ArtifactDto artifact;
-    @NotNull
-    @Size(min = 1, max = 20)
-    private String version;
     private List<ArtifactDto> dependencies;
     @Size(max = 512)
     private String repositoryUrl;
@@ -55,14 +52,6 @@ public class VersionInformationDto {
 
     public void setArtifact(ArtifactDto artifact) {
         this.artifact = artifact;
-    }
-
-    public String getVersion() {
-        return version;
-    }
-
-    public void setVersion(String version) {
-        this.version = version;
     }
 
     public List<ArtifactDto> getDependencies() {

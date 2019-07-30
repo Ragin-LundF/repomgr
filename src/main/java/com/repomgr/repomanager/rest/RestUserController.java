@@ -6,6 +6,8 @@ import com.repomgr.repomanager.rest.model.user.PasswordDto;
 import com.repomgr.repomanager.rest.model.common.ResponseDto;
 import com.repomgr.repomanager.rest.model.user.UserDto;
 import org.owasp.encoder.Encode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/v1/users")
 public class RestUserController {
+    private final static Logger LOG = LoggerFactory.getLogger(RestUserController.class);
     private final UserService userService;
 
     @Autowired
@@ -36,13 +39,17 @@ public class RestUserController {
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @PostMapping
     public ResponseEntity storeUser(@RequestBody UserDto userDto) {
+        LOG.debug("[RestUserController][storeUser] Store user request accepted.");
+        ResponseEntity response;
         if (userDto != null && StringUtils.isEmpty(userDto.getRole())) {
-            return new ResponseEntity<>(new ResponseDto(false, new MessageDto("ERROR", "User empty or missing role.")), HttpStatus.BAD_REQUEST);
+            response = new ResponseEntity<>(new ResponseDto(false, new MessageDto("ERROR", "User empty or missing role.")), HttpStatus.BAD_REQUEST);
         } else {
             UserDto storedUser = userService.storeUser(userDto);
-
-            return new ResponseEntity<>(storedUser, HttpStatus.CREATED);
+            response = new ResponseEntity<>(storedUser, HttpStatus.CREATED);
         }
+
+        LOG.debug("[RestUserController][storeUser] Store user request finished.");
+        return response;
     }
 
     /**
@@ -55,6 +62,9 @@ public class RestUserController {
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @PutMapping("/{userId}/password")
     public ResponseEntity updateUserPassword(@PathVariable("userId") String userId, @RequestBody PasswordDto passwordDto) {
+        LOG.debug("[RestUserController][updateUserPassword] Update user password request accepted.");
+        ResponseEntity response;
+
         userId = Encode.forJava(userId);
         UserDto userDto = new UserDto();
         userDto.setUserId(userId);
@@ -62,10 +72,13 @@ public class RestUserController {
         UserDto updatedUser = userService.updatePassword(userDto);
 
         if (updatedUser != null && updatedUser.isValid() && ! StringUtils.isEmpty(updatedUser.getUserId())) {
-            return new ResponseEntity<>(updatedUser, HttpStatus.OK);
+            response = new ResponseEntity<>(updatedUser, HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(new ResponseDto(false, new MessageDto("ERROR", "Can not update the user.")), HttpStatus.BAD_REQUEST);
+            response = new ResponseEntity<>(new ResponseDto(false, new MessageDto("ERROR", "Can not update the user.")), HttpStatus.BAD_REQUEST);
         }
+
+        LOG.debug("[RestUserController][updateUserPassword] Update user password request finished.");
+        return response;
     }
 
     /**
@@ -77,9 +90,16 @@ public class RestUserController {
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @DeleteMapping("/{userId}")
     public ResponseEntity deleteUser(@PathVariable("userId") String userId) {
+        LOG.debug("[RestUserController][deleteUser] Delete user request accepted.");
+        ResponseEntity response;
+
         if (userService.deleteByUserId(userId)) {
-            return ResponseEntity.noContent().build();
+            response = ResponseEntity.noContent().build();
+        } else {
+            response = ResponseEntity.badRequest().build();
         }
-        return ResponseEntity.badRequest().build();
+
+        LOG.debug("[RestUserController][deleteUser] Delete user request finished.");
+        return response;
     }
 }
