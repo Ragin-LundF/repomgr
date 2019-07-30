@@ -120,18 +120,20 @@ public class VersionService {
         // create query and execute database statement
         Page<VersionEntity> pagedResult = versionRepository.findAll((Specification<VersionEntity>) (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
-            if (!StringUtils.isEmpty(versionInformationDto.getArtifact().getVersion())) {
-                predicates.add(criteriaBuilder.equal(root.get("version"), versionInformationDto.getArtifact().getVersion()));
-            }
+            if (versionInformationDto.getArtifact() != null) {
+                if (!StringUtils.isEmpty(versionInformationDto.getArtifact().getVersion())) {
+                    predicates.add(criteriaBuilder.equal(root.get("version"), versionInformationDto.getArtifact().getVersion()));
+                }
 
-            if (!StringUtils.isEmpty(versionInformationDto.getArtifact().getArtifactId())) {
-                predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("artifactId")),
-                        "%" + versionInformationDto.getArtifact().getArtifactId().toLowerCase() + "%"));
-            }
+                if (!StringUtils.isEmpty(versionInformationDto.getArtifact().getArtifactId())) {
+                    predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("artifactId")),
+                            "%" + versionInformationDto.getArtifact().getArtifactId().toLowerCase() + "%"));
+                }
 
-            if (!StringUtils.isEmpty(versionInformationDto.getArtifact().getGroupId())) {
-                predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("groupId")),
-                        "%" + versionInformationDto.getArtifact().getGroupId().toLowerCase() + "%"));
+                if (!StringUtils.isEmpty(versionInformationDto.getArtifact().getGroupId())) {
+                    predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("groupId")),
+                            "%" + versionInformationDto.getArtifact().getGroupId().toLowerCase() + "%"));
+                }
             }
 
             if (!StringUtils.isEmpty(versionInformationDto.getBranch())) {
