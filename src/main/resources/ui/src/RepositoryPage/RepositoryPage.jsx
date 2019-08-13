@@ -43,14 +43,16 @@ class RepositoryPage extends React.Component {
 
     search(sortField, sortDirection, page, size) {
         let filter = {
-            "artifactId": this.state.artifactId,
-            "groupId": this.state.groupId,
-            "version": this.state.version,
+            "artifact": {
+                "artifactId": this.state.artifactId,
+                "groupId": this.state.groupId,
+                "version": this.state.version
+            },
             "latestVersion": this.state.latestVersion
         };
         versionService.search(filter, sortField, sortDirection, page, size).then(versions => {
             this.setState({page: versions.page});
-            return this.setState({versions: versions.versionInformations});
+            return this.setState({versions: versions.versionInformation});
         });
     }
 
@@ -141,17 +143,17 @@ class RepositoryPage extends React.Component {
                                 },
                                 {
                                     Header: "Group Id",
-                                    accessor: "groupId",
+                                    accessor: "artifact.groupId",
                                     id: "groupId",
                                 },
                                 {
                                     Header: "Artifact Id",
-                                    accessor: "artifactId",
+                                    accessor: "artifact.artifactId",
                                     id: "artifactId",
                                 },
                                 {
                                     Header: "Version",
-                                    accessor: "version",
+                                    accessor: "artifact.version",
                                     id: "version"
                                 },
                                 {

@@ -7,7 +7,7 @@ This tool is build to manage versions from CI/CD processes.
 It can be used at the build-pipeline to store artifact versions and additional information to a central database.
 There are possibilities to differ between branch versions and projects.
 
-![alt text](etc/img/diagram.png "Logo Title Text 1")
+![alt text](etc/img/diagram.png "Overview")
 
 # RepoMgr UI #
 
@@ -240,3 +240,7 @@ Stopping the environment:
 ```bash
 docker-compose down
 ```
+
+# Screenshot #
+
+![alt text](etc/img/screenshot.png "Screenshot")

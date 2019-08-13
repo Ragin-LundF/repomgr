@@ -94,12 +94,23 @@ public class VersionService {
             for (VersionEntity versionEntity : pagedResult.getContent()) {
                 version = new VersionInformationDto();
                 BeanUtils.copyProperties(versionEntity, version);
+                // to be secure, that BeanUtils did not set any proxy database classes
+                version.setDependencies(null);
+
+                // Map artifact
+                ArtifactDto artifactDto = new ArtifactDto();
+                artifactDto.setVersion(versionEntity.getVersion());
+                artifactDto.setGroupId(versionEntity.getGroupId());
+                artifactDto.setArtifactId(versionEntity.getArtifactId());
+                version.setArtifact(artifactDto);
+
+                // Map dependencies
                 if (! Collections.isEmpty(versionEntity.getDependencies())) {
                     ArrayList<ArtifactDto> artifactDtoArrayList = new ArrayList<>();
                     for (VersionEntity versionDependencyEntity : versionEntity.getDependencies()) {
-                        ArtifactDto artifactDto = new ArtifactDto();
-                        BeanUtils.copyProperties(versionDependencyEntity, artifactDto);
-                        artifactDtoArrayList.add(artifactDto);
+                        ArtifactDto depArtifactDto = new ArtifactDto();
+                        BeanUtils.copyProperties(versionDependencyEntity, depArtifactDto);
+                        artifactDtoArrayList.add(depArtifactDto);
                     }
                     version.setDependencies(artifactDtoArrayList);
                 }
