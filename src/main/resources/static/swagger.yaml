@@ -283,6 +283,12 @@ definitions:
       type:
         description: "Defines the type of the package, for example. FRONTEND, BACKEND, JS-LIBRARY, BACKEND-LIBRARY"
         type: string
+        example: "BACKEND"
+        maxLength: 255
+      uid:
+        description: "Unique UUID for identifying an entry"
+        example: "f95c4f24-9931-47b5-a4bd-6a74b4c46658"
+        maxLength: 55
 
   Artifact:
     description: "Contains information about an artifact in maven-style"

@@ -67,6 +67,13 @@ databaseChangeLog:
                   constraints:
                     nullable: false
                   remarks: 'Type of the artifact like WIDGET, LIBRARY...'
+              - column:
+                  name: UID
+                  type: VARCHAR(55)
+                  constraints:
+                    nullable: false
+                    unique: true
+                  remarks: 'UUID for identifying the entry'
 
         # Index Project name
         - createIndex:
@@ -112,3 +119,12 @@ databaseChangeLog:
             columns:
               - column:
                   name: TYPE
+
+        # Index Type
+        - createIndex:
+            tableName: REPO_VERSION
+            indexName: RM_UID_IDX
+            remarks: 'Index of the uuid of an artifact'
+            columns:
+              - column:
+                  name: UID

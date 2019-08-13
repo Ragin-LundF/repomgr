@@ -28,7 +28,10 @@ public class VersionInformationDto {
     private Boolean latestVersion;
     private String description;
     @NotNull
+    @Size(max = 255)
     private String type;
+    @Size(max = 55)
+    private String uid;
 
     public String getProjectName() {
         return projectName;
@@ -100,5 +103,13 @@ public class VersionInformationDto {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
     }
 }

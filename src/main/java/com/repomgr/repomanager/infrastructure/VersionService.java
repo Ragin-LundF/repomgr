@@ -9,6 +9,7 @@ import com.repomgr.repomanager.rest.model.artifacts.VersionInformationDto;
 import com.repomgr.repomanager.rest.model.common.MessageDto;
 import com.repomgr.repomanager.rest.model.common.PageDto;
 import com.repomgr.repomanager.rest.model.common.ResponseDto;
+import io.jsonwebtoken.lang.Collections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -23,6 +24,7 @@ import org.springframework.util.StringUtils;
 import javax.persistence.criteria.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Service class for handling version and artifact information.
@@ -44,12 +46,15 @@ public class VersionService {
      * @return ResponseDto with status and messages, if something failed.
      */
     @Transactional
-    public ResponseDto pushNewVersion(VersionInformationDto versionInformationDto) {
+    public ResponseDto pushNewVersion(final VersionInformationDto versionInformationDto) {
         LOG.debug("[VersionService][pushNewVersion] Push new version in service started.");
         ResponseDto responseDto = new ResponseDto(false);
         VersionEntity versionEntity = new VersionEntity();
         BeanUtils.copyProperties(versionInformationDto, versionEntity);
         BeanUtils.copyProperties(versionInformationDto.getArtifact(), versionEntity);
+        if (StringUtils.isEmpty(versionEntity.getUid())) {
+            versionEntity.setUid(UUID.randomUUID().toString());
+        }
 
         resolveDependencies(versionInformationDto, versionEntity);
 
@@ -75,7 +80,8 @@ public class VersionService {
      * @param pageable                  paging information
      * @return                          list of artifacts
      */
-    public VersionInformationContainerDto listVersionInformation(VersionInformationDto versionInformationDto, Pageable pageable) {
+    @Transactional
+    public VersionInformationContainerDto listVersionInformation(final VersionInformationDto versionInformationDto, final Pageable pageable) {
         LOG.debug("[VersionService][listVersionInformation] List versions in service started.");
 
         // create query and execute database statement
@@ -88,6 +94,15 @@ public class VersionService {
             for (VersionEntity versionEntity : pagedResult.getContent()) {
                 version = new VersionInformationDto();
                 BeanUtils.copyProperties(versionEntity, version);
+                if (! Collections.isEmpty(versionEntity.getDependencies())) {
+                    ArrayList<ArtifactDto> artifactDtoArrayList = new ArrayList<>();
+                    for (VersionEntity versionDependencyEntity : versionEntity.getDependencies()) {
+                        ArtifactDto artifactDto = new ArtifactDto();
+                        BeanUtils.copyProperties(versionDependencyEntity, artifactDto);
+                        artifactDtoArrayList.add(artifactDto);
+                    }
+                    version.setDependencies(artifactDtoArrayList);
+                }
                 versionList.add(version);
             }
         }
@@ -115,7 +130,8 @@ public class VersionService {
      * @param pageable              Paging
      * @return                      Database entity as page
      */
-    public Page<VersionEntity> listVersionEntities(VersionInformationDto versionInformationDto, Pageable pageable) {
+    @Transactional
+    public Page<VersionEntity> listVersionEntities(final VersionInformationDto versionInformationDto, final Pageable pageable) {
         LOG.debug("[VersionService][listVersionEntities] List version entities in service started.");
         // create query and execute database statement
         Page<VersionEntity> pagedResult = versionRepository.findAll((Specification<VersionEntity>) (root, query, criteriaBuilder) -> {
@@ -165,7 +181,7 @@ public class VersionService {
      * @param versionEntity             Version entity to store
      * @return                          version entity to store with dependencies
      */
-    public VersionEntity resolveDependencies(VersionInformationDto versionInformationDto, VersionEntity versionEntity) {
+    public VersionEntity resolveDependencies(final VersionInformationDto versionInformationDto, VersionEntity versionEntity) {
         LOG.debug("[VersionService][resolveDependencies] Resolve version dependencies service started.");
         if (versionInformationDto.getDependencies() != null) {
             versionEntity.setDependencies(new ArrayList<>());

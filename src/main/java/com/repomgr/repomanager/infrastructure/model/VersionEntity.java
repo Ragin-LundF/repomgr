@@ -29,7 +29,9 @@ public class VersionEntity implements Serializable {
     private String description;
     @Column(name = "TYPE", nullable = false)
     private String type;
-    @OneToMany(cascade = CascadeType.ALL)
+    @Column(name = "UID", nullable = false)
+    private String uid;
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(
             name = "REPO_DEPENDENCY_JOIN",
             joinColumns = @JoinColumn(name = "ARTIFACT_ID"),
@@ -115,6 +117,14 @@ public class VersionEntity implements Serializable {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
     }
 
     public List<VersionEntity> getDependencies() {
