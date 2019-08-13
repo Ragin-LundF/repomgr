@@ -2,10 +2,11 @@ package com.repomgr.repomanager;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.repomgr.repomanager.constants.Constants;
-import com.repomgr.repomanager.rest.model.PasswordDto;
-import com.repomgr.repomanager.rest.model.TokenDto;
-import com.repomgr.repomanager.rest.model.UserDto;
-import com.repomgr.repomanager.rest.model.VersionInformationDto;
+import com.repomgr.repomanager.rest.model.artifacts.ArtifactDto;
+import com.repomgr.repomanager.rest.model.user.PasswordDto;
+import com.repomgr.repomanager.rest.model.user.TokenDto;
+import com.repomgr.repomanager.rest.model.user.UserDto;
+import com.repomgr.repomanager.rest.model.artifacts.VersionInformationDto;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -101,15 +102,20 @@ public class RepoManagerApplicationTests {
 
     @Test
     public void testStoreNewVersion() throws Exception {
+        // create artifact
+        ArtifactDto artifactDto = new ArtifactDto();
+        artifactDto.setGroupId("com.repomgr");
+        artifactDto.setArtifactId("RepoAdmin");
+        artifactDto.setVersion("1.0.0");
+
         // create new version object
         VersionInformationDto versionInformationDto = new VersionInformationDto();
-        versionInformationDto.setGroupId("com.repomgr");
-        versionInformationDto.setArtifactId("RepoAdmin");
-        versionInformationDto.setVersion("1.0.0");
+        versionInformationDto.setArtifact(artifactDto);
         versionInformationDto.setBranch("master");
         versionInformationDto.setProjectName("MyProject");
         versionInformationDto.setRepositoryUrl("http://domain.com/repo");
         versionInformationDto.setCreationDate(new Date());
+        versionInformationDto.setType("LIBRARY");
 
         ObjectMapper objectMapper = new ObjectMapper();
         String body = objectMapper.writeValueAsString(versionInformationDto);
@@ -124,7 +130,7 @@ public class RepoManagerApplicationTests {
 
         resultActions
                 .andExpect(status().isCreated())
-                .andExpect(content().string(containsString("\"status\":true")));
+                .andExpect(content().string(containsString("\"_status\":true")));
     }
 
     /**

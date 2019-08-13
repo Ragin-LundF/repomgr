@@ -6,23 +6,23 @@ databaseChangeLog:
       changes:
         # Insert Admin user
         - insert:
-            tableName: repo_user
+            tableName: REPO_USER
             columns:
               - column:
-                  name: id
+                  name: ID
                   value: 1
               - column:
-                  name: username
+                  name: USERNAME
                   value: 'admin'
               - column:
-                  name: password
+                  name: PASSWORD
                   value: '$2a$10$cCQl52ij/UrAd60MqNIQQ..iAR9ujgZlI55JtU331hMrVUA2ltE3a'
               - column:
-                  name: project_name
+                  name: PROJECT_NAME
                   value: 'MyProject'
               - column:
-                  name: user_id
+                  name: USER_ID
                   value: '5c6a1223-076b-4bc0-b0b7-20b0da0e23fd'
               - column:
-                  name: role
+                  name: ROLE
                   value: 'ROLE_ADMIN'

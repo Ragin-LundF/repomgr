@@ -1,6 +1,7 @@
-package com.repomgr.repomanager.rest.model;
+package com.repomgr.repomanager.rest.model.user;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.repomgr.repomanager.rest.model.common.ResponseDto;
 
 import javax.validation.constraints.NotNull;
 
@@ -8,7 +9,7 @@ import javax.validation.constraints.NotNull;
  * Token DTO
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class TokenDto {
+public class TokenDto extends ResponseDto {
     @NotNull
     private String token;
     private String userId;

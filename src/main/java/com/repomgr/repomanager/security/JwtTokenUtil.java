@@ -2,10 +2,12 @@ package com.repomgr.repomanager.security;
 
 import com.repomgr.repomanager.config.RepoManagerProperties;
 import com.repomgr.repomanager.infrastructure.UserService;
-import com.repomgr.repomanager.rest.model.UserDto;
+import com.repomgr.repomanager.rest.model.user.UserDto;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -22,6 +24,7 @@ import java.util.function.Function;
  */
 @Component
 public class JwtTokenUtil {
+    private final static Logger LOG = LoggerFactory.getLogger(JwtTokenUtil.class);
     private final RepoManagerProperties repoManagerProperties;
     private final UserService userService;
 
@@ -46,7 +49,10 @@ public class JwtTokenUtil {
      * @return              true if token was valid
      */
     public boolean validateToken(String token, UserDetails userDetails) {
+        LOG.debug("[JwtTokenUtil][validateToken] Validate token claim lookup started.");
         final String username = lookupClaim(token, Claims::getSubject);
+        LOG.debug("[JwtTokenUtil][validateToken] Validate token claim lookup finished.");
+
         return (username.equals(userDetails.getUsername()) && ! isTokenExpired(token));
     }
 
@@ -57,7 +63,11 @@ public class JwtTokenUtil {
      * @return          true if token is expired
      */
     private Boolean isTokenExpired(String token) {
+        LOG.debug("[JwtTokenUtil][isTokenExpired] Token expiry check started.");
+
         final Date expiration = lookupClaim(token, Claims::getExpiration);
+
+        LOG.debug("[JwtTokenUtil][isTokenExpired] Token expiry check finished.");
         return expiration.before(new Date());
     }
 
@@ -70,16 +80,21 @@ public class JwtTokenUtil {
      * @return          JWT token as string
      */
     public String generateToken(UserDto user) {
+        LOG.debug("[JwtTokenUtil][generateToken] Generate token started.");
+
         Claims claims = Jwts.claims().setSubject(user.getUsername());
         claims.put("scopes", Collections.singletonList(userService.lookupAuthority(user.getRole())));
 
-        return Jwts.builder()
+        String token = Jwts.builder()
                 .setClaims(claims)
                 .setIssuer("RepoManager")
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + repoManagerProperties.getSecurity().getTokenExpirationTime() * 1000))
                 .signWith(SignatureAlgorithm.HS256, repoManagerProperties.getSecurity().getSigningKey())
                 .compact();
+
+        LOG.debug("[JwtTokenUtil][generateToken] Generate token finished.");
+        return token;
     }
 
     /**
@@ -95,13 +110,18 @@ public class JwtTokenUtil {
      * @return                  Content of the claim
      */
     public <T> T lookupClaim(String token, Function<Claims, T> claimsResolver) {
+        LOG.debug("[JwtTokenUtil][lookupClaim] Lookup token claim started.");
+        T apply = null;
+
         if (! StringUtils.isEmpty(token)) {
             final Claims claims = Jwts.parser()
                     .setSigningKey(repoManagerProperties.getSecurity().getSigningKey())
                     .parseClaimsJws(token)
                     .getBody();
-            return claimsResolver.apply(claims);
+            apply = claimsResolver.apply(claims);
         }
-        return null;
+
+        LOG.debug("[JwtTokenUtil][lookupClaim] Lookup token claim finished.");
+        return apply;
     }
 }

@@ -6,60 +6,60 @@ databaseChangeLog:
       comment: 'Initial Import of repo_user table'
       changes:
         - createTable:
-            tableName: repo_user
+            tableName: REPO_USER
             remarks: 'User table for authentication'
             columns:
               - column:
                   autoIncrement: true
                   constraints:
                     primaryKey: true
-                    primaryKeyName: rm_user_id_pkey
-                  name: id
+                    primaryKeyName: RM_USER_ID_PKEY
+                  name: ID
                   type: BIGSERIAL
                   remarks: 'ID / Primary Key'
               - column:
-                  name: username
+                  name: USERNAME
                   type: VARCHAR(100)
                   constraints:
                     nullable: false
                     unique: true
                   remarks: 'username'
               - column:
-                  name: password
+                  name: PASSWORD
                   type: VARCHAR(255)
                   constraints:
                     nullable: false
                   remarks: 'password'
               - column:
-                  name: user_id
+                  name: USER_ID
                   type: VARCHAR(100)
                   constraints:
                     nullable: false
                     unique: true
                   remarks: 'UUID for user'
               - column:
-                  name: project_name
+                  name: PROJECT_NAME
                   type: VARCHAR(100)
                   remarks: 'name of the project of the user'
               - column:
-                  name: role
+                  name: ROLE
                   type: VARCHAR(100)
                   remarks: 'role of the user. this value can be ADMIN or USER'
 
         # Index username
         - createIndex:
-            tableName: repo_user
-            indexName: rm_username_index
+            tableName: REPO_USER
+            indexName: RM_USERNAME_IDX
             remarks: 'Index of username'
             columns:
               - column:
-                  name: username
+                  name: USERNAME
 
         # Index userid
         - createIndex:
-            tableName: repo_user
-            indexName: rm_userid_index
+            tableName: REPO_USER
+            indexName: RM_USERID_IDX
             remarks: 'Index of the UUID of the user'
             columns:
               - column:
-                  name: user_id
+                  name: USER_ID

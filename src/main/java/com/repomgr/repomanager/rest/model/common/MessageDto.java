@@ -1,4 +1,4 @@
-package com.repomgr.repomanager.rest.model;
+package com.repomgr.repomanager.rest.model.common;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 

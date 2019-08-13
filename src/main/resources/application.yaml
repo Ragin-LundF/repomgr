@@ -23,11 +23,11 @@ security:
   jwt:
     client-secret: secret
 
-# Actuator Informations
+# Actuator information
 info:
   app:
     name: RepositoryAdmin
-    version: 0.0.1
+    version: 0.2.0
     description: Repository Administration
 
 # Logging

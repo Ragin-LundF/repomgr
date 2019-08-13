@@ -1,10 +1,11 @@
-package com.repomgr.repomanager.rest.model;
+package com.repomgr.repomanager.rest.model.artifacts;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Date;
+import java.util.List;
 
 /**
  * VersionInformation DTO for repository and artifact related information.
@@ -18,19 +19,19 @@ public class VersionInformationDto {
     @Size(min = 1, max = 255)
     private String branch;
     @NotNull
-    @Size(min = 1, max = 100)
-    private String groupId;
-    @NotNull
-    @Size(min = 1, max = 100)
-    private String artifactId;
-    @NotNull
-    @Size(min = 1, max = 20)
-    private String version;
+    private ArtifactDto artifact;
+    private List<ArtifactDto> dependencies;
     @Size(max = 512)
     private String repositoryUrl;
     @NotNull
     private Date creationDate;
     private Boolean latestVersion;
+    private String description;
+    @NotNull
+    @Size(max = 255)
+    private String type;
+    @Size(max = 55)
+    private String uid;
 
     public String getProjectName() {
         return projectName;
@@ -48,28 +49,20 @@ public class VersionInformationDto {
         this.branch = branch;
     }
 
-    public String getGroupId() {
-        return groupId;
+    public ArtifactDto getArtifact() {
+        return artifact;
     }
 
-    public void setGroupId(String groupId) {
-        this.groupId = groupId;
+    public void setArtifact(ArtifactDto artifact) {
+        this.artifact = artifact;
     }
 
-    public String getArtifactId() {
-        return artifactId;
+    public List<ArtifactDto> getDependencies() {
+        return dependencies;
     }
 
-    public void setArtifactId(String artifactId) {
-        this.artifactId = artifactId;
-    }
-
-    public String getVersion() {
-        return version;
-    }
-
-    public void setVersion(String version) {
-        this.version = version;
+    public void setDependencies(List<ArtifactDto> dependencies) {
+        this.dependencies = dependencies;
     }
 
     public String getRepositoryUrl() {
@@ -94,5 +87,29 @@ public class VersionInformationDto {
 
     public void setLatestVersion(Boolean latestVersion) {
         this.latestVersion = latestVersion;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
     }
 }

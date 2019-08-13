@@ -3,7 +3,13 @@ package com.repomgr.repomanager.infrastructure;
 import com.repomgr.repomanager.constants.Constants;
 import com.repomgr.repomanager.infrastructure.model.VersionEntity;
 import com.repomgr.repomanager.infrastructure.repository.VersionRepository;
-import com.repomgr.repomanager.rest.model.*;
+import com.repomgr.repomanager.rest.model.artifacts.ArtifactDto;
+import com.repomgr.repomanager.rest.model.artifacts.VersionInformationContainerDto;
+import com.repomgr.repomanager.rest.model.artifacts.VersionInformationDto;
+import com.repomgr.repomanager.rest.model.common.MessageDto;
+import com.repomgr.repomanager.rest.model.common.PageDto;
+import com.repomgr.repomanager.rest.model.common.ResponseDto;
+import io.jsonwebtoken.lang.Collections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -12,13 +18,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-import javax.persistence.criteria.Subquery;
+import javax.persistence.criteria.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Service class for handling version and artifact information.
@@ -39,40 +45,122 @@ public class VersionService {
      * @param versionInformationDto Version information DTO
      * @return ResponseDto with status and messages, if something failed.
      */
-    public ResponseDto pushNewVersion(VersionInformationDto versionInformationDto) {
+    @Transactional
+    public ResponseDto pushNewVersion(final VersionInformationDto versionInformationDto) {
+        LOG.debug("[VersionService][pushNewVersion] Push new version in service started.");
         ResponseDto responseDto = new ResponseDto(false);
         VersionEntity versionEntity = new VersionEntity();
         BeanUtils.copyProperties(versionInformationDto, versionEntity);
+        BeanUtils.copyProperties(versionInformationDto.getArtifact(), versionEntity);
+        if (StringUtils.isEmpty(versionEntity.getUid())) {
+            versionEntity.setUid(UUID.randomUUID().toString());
+        }
+
+        resolveDependencies(versionInformationDto, versionEntity);
 
         VersionEntity savedEntity = versionRepository.save(versionEntity);
 
         if (savedEntity.getId() != null) {
             responseDto.setStatus(true);
         } else {
-            String message = "Unable to store GroupId [" + versionInformationDto.getGroupId() + "] ArtifactId [" + versionInformationDto.getArtifactId() + "] in version [" + versionInformationDto.getVersion() + "]";
+            String message = "Unable to store GroupId [" + versionInformationDto.getArtifact().getGroupId() + "] ArtifactId [" + versionInformationDto.getArtifact().getArtifactId() + "] in version [" + versionInformationDto.getArtifact().getVersion() + "]";
             MessageDto messageDto = new MessageDto(Constants.REST_MESSAGE_CODE_ERROR, message);
             responseDto.setMessage(messageDto);
             LOG.error(message);
         }
+
+        LOG.debug("[VersionService][pushNewVersion] Push new version in service finished.");
         return responseDto;
     }
 
-    public VersionInformationContainerDto listVersionInformations(VersionInformationDto versionInformationDto, Pageable pageable) {
+    /**
+     * List information of artifacts by version information filter.
+     *
+     * @param versionInformationDto     filter data
+     * @param pageable                  paging information
+     * @return                          list of artifacts
+     */
+    @Transactional
+    public VersionInformationContainerDto listVersionInformation(final VersionInformationDto versionInformationDto, final Pageable pageable) {
+        LOG.debug("[VersionService][listVersionInformation] List versions in service started.");
+
+        // create query and execute database statement
+        Page<VersionEntity> pagedResult = listVersionEntities(versionInformationDto, pageable);
+
+        // map data to DTO
+        List<VersionInformationDto> versionList = new ArrayList<>();
+        if (!pagedResult.isEmpty()) {
+            VersionInformationDto version;
+            for (VersionEntity versionEntity : pagedResult.getContent()) {
+                version = new VersionInformationDto();
+                BeanUtils.copyProperties(versionEntity, version);
+                // to be secure, that BeanUtils did not set any proxy database classes
+                version.setDependencies(null);
+
+                // Map artifact
+                ArtifactDto artifactDto = new ArtifactDto();
+                artifactDto.setVersion(versionEntity.getVersion());
+                artifactDto.setGroupId(versionEntity.getGroupId());
+                artifactDto.setArtifactId(versionEntity.getArtifactId());
+                version.setArtifact(artifactDto);
+
+                // Map dependencies
+                if (! Collections.isEmpty(versionEntity.getDependencies())) {
+                    ArrayList<ArtifactDto> artifactDtoArrayList = new ArrayList<>();
+                    for (VersionEntity versionDependencyEntity : versionEntity.getDependencies()) {
+                        ArtifactDto depArtifactDto = new ArtifactDto();
+                        BeanUtils.copyProperties(versionDependencyEntity, depArtifactDto);
+                        artifactDtoArrayList.add(depArtifactDto);
+                    }
+                    version.setDependencies(artifactDtoArrayList);
+                }
+                versionList.add(version);
+            }
+        }
+
+        // map pages
+        PageDto pageDto = new PageDto();
+        pageDto.setTotalElements(pagedResult.getTotalElements());
+        pageDto.setTotalPages(pagedResult.getTotalPages());
+        pageDto.setCurrentPage(1 + pagedResult.getNumber());
+        pageDto.setNumberOfElements(pagedResult.getNumberOfElements());
+
+        // map version information
+        VersionInformationContainerDto versionInformationContainerDto = new VersionInformationContainerDto();
+        versionInformationContainerDto.setVersionInformation(versionList);
+        versionInformationContainerDto.setPage(pageDto);
+
+        LOG.debug("[VersionService][listVersionInformation] List versions in service finished.");
+        return versionInformationContainerDto;
+    }
+
+    /**
+     * List version entities from database
+     *
+     * @param versionInformationDto VersionInformationDto filter
+     * @param pageable              Paging
+     * @return                      Database entity as page
+     */
+    @Transactional
+    public Page<VersionEntity> listVersionEntities(final VersionInformationDto versionInformationDto, final Pageable pageable) {
+        LOG.debug("[VersionService][listVersionEntities] List version entities in service started.");
         // create query and execute database statement
         Page<VersionEntity> pagedResult = versionRepository.findAll((Specification<VersionEntity>) (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
-            if (!StringUtils.isEmpty(versionInformationDto.getVersion())) {
-                predicates.add(criteriaBuilder.equal(root.get("version"), versionInformationDto.getVersion()));
-            }
+            if (versionInformationDto.getArtifact() != null) {
+                if (!StringUtils.isEmpty(versionInformationDto.getArtifact().getVersion())) {
+                    predicates.add(criteriaBuilder.equal(root.get("version"), versionInformationDto.getArtifact().getVersion()));
+                }
 
-            if (!StringUtils.isEmpty(versionInformationDto.getArtifactId())) {
-                predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("artifactId")),
-                        "%" + versionInformationDto.getArtifactId().toLowerCase() + "%"));
-            }
+                if (!StringUtils.isEmpty(versionInformationDto.getArtifact().getArtifactId())) {
+                    predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("artifactId")),
+                            "%" + versionInformationDto.getArtifact().getArtifactId().toLowerCase() + "%"));
+                }
 
-            if (!StringUtils.isEmpty(versionInformationDto.getGroupId())) {
-                predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("groupId")),
-                        "%" + versionInformationDto.getGroupId().toLowerCase() + "%"));
+                if (!StringUtils.isEmpty(versionInformationDto.getArtifact().getGroupId())) {
+                    predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("groupId")),
+                            "%" + versionInformationDto.getArtifact().getGroupId().toLowerCase() + "%"));
+                }
             }
 
             if (!StringUtils.isEmpty(versionInformationDto.getBranch())) {
@@ -93,29 +181,40 @@ public class VersionService {
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         }, pageable);
 
-        // map data to DTO
-        List<VersionInformationDto> versionList = new ArrayList<>();
-        if (!pagedResult.isEmpty()) {
-            VersionInformationDto version;
-            for (VersionEntity versionEntity : pagedResult.getContent()) {
-                version = new VersionInformationDto();
-                BeanUtils.copyProperties(versionEntity, version);
-                versionList.add(version);
+        LOG.debug("[VersionService][listVersionEntities] List version entities in service finished.");
+        return pagedResult;
+    }
+
+    /**
+     * Resolve dependencies by artifact, group and version.
+     *
+     * @param versionInformationDto     Request object
+     * @param versionEntity             Version entity to store
+     * @return                          version entity to store with dependencies
+     */
+    public VersionEntity resolveDependencies(final VersionInformationDto versionInformationDto, VersionEntity versionEntity) {
+        LOG.debug("[VersionService][resolveDependencies] Resolve version dependencies service started.");
+        if (versionInformationDto.getDependencies() != null) {
+            versionEntity.setDependencies(new ArrayList<>());
+
+            for (ArtifactDto artifactEntry : versionInformationDto.getDependencies()) {
+                ArtifactDto artifactFilter = new ArtifactDto();
+                artifactFilter.setArtifactId(artifactEntry.getArtifactId());
+                artifactFilter.setGroupId(artifactEntry.getGroupId());
+                artifactFilter.setVersion(artifactEntry.getVersion());
+
+                VersionInformationDto filter = new VersionInformationDto();
+                filter.setArtifact(artifactFilter);
+
+                Page<VersionEntity> versionEntities = listVersionEntities(filter, Pageable.unpaged());
+                if (versionEntities != null && versionEntities.hasContent()) {
+                    VersionEntity dependencyVersionEntity = versionEntities.getContent().get(0);
+                    versionEntity.getDependencies().add(dependencyVersionEntity);
+                }
             }
         }
 
-        // map pages
-        PageDto pageDto = new PageDto();
-        pageDto.setTotalElements(pagedResult.getTotalElements());
-        pageDto.setTotalPages(pagedResult.getTotalPages());
-        pageDto.setCurrentPage(1 + pagedResult.getNumber());
-        pageDto.setNumberOfElements(pagedResult.getNumberOfElements());
-
-        // map version information
-        VersionInformationContainerDto versionInformationContainerDto = new VersionInformationContainerDto();
-        versionInformationContainerDto.setVersionInformations(versionList);
-        versionInformationContainerDto.setPage(pageDto);
-
-        return versionInformationContainerDto;
+        LOG.debug("[VersionService][resolveDependencies] Resolve version dependencies service finished.");
+        return versionEntity;
     }
 }

@@ -1,0 +1,28 @@
+# repo_dependency
+databaseChangeLog:
+  - changeSet:
+      id: 01-init-repomgr-join-01
+      author: joerg.flade@l-und-f.de
+      comment: 'Initial Import of REPO_DEPENDENCY_JOIN table'
+      changes:
+        - createTable:
+            tableName: REPO_DEPENDENCY_JOIN
+            remarks: 'Mapping table for artifacts'
+            columns:
+              - column:
+                  name: ARTIFACT_ID
+                  type: BIGSERIAL
+                  constraints:
+                    nullable: false
+                  remarks: 'ID of artifact'
+              - column:
+                  name: DEPENDENCY_ID
+                  type: BIGSERIAL
+                  constraints:
+                    nullable: false
+                  remarks: 'ID of dependency'
+
+        - addPrimaryKey:
+            columnNames: ARTIFACT_ID, DEPENDENCY_ID
+            constraintName: PK_RM_DEP_JOIN
+            tableName: REPO_DEPENDENCY_JOIN

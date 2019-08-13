@@ -73,7 +73,7 @@ paths:
         - "repository"
       summary: "List repository data"
       description: "List artifacts at repository with additional filter options"
-      operationId: "listVersionInformations"
+      operationId: "listVersionInformation"
       consumes:
         - "application/json"
       produces:
@@ -137,13 +137,17 @@ paths:
           description: "successful authenticated and token generated"
           schema:
             $ref: '#/definitions/Token'
+        401:
+          description: "Unauthorized. Wrong credentials"
+          schema:
+            $ref: '#/definitions/Response'
 
   /users:
     post:
       tags:
         - "user"
       summary: "Add a new user"
-      description: "Add a new user or prject"
+      description: "Add a new user or project"
       operationId: "storeUser"
       consumes:
         - "application/json"
@@ -152,7 +156,7 @@ paths:
       parameters:
         - in: "body"
           name: "body"
-          description: "User informations to store"
+          description: "User information to store"
           required: true
           schema:
             $ref: "#/definitions/User"
@@ -265,6 +269,31 @@ definitions:
         minLength: 1
         maxLength: 255
         example: "master"
+      artifact:
+        $ref: '#/definitions/Artifact'
+      dependencies:
+        description: "Shows Dependencies to other artifacts. Mostly this should be used for application dependencies."
+        type: array
+        items:
+          $ref: '#/definitions/Artifact'
+      latestVersion:
+        description: "If true, only the latest versions will be returned. *This flag can only be used while search filtering.*"
+        type: boolean
+        example: true
+      type:
+        description: "Defines the type of the package, for example. FRONTEND, BACKEND, JS-LIBRARY, BACKEND-LIBRARY"
+        type: string
+        example: "BACKEND"
+        maxLength: 255
+      uid:
+        description: "Unique UUID for identifying an entry"
+        example: "f95c4f24-9931-47b5-a4bd-6a74b4c46658"
+        maxLength: 55
+
+  Artifact:
+    description: "Contains information about an artifact in maven-style"
+    type: object
+    properties:
       groupId:
         description: "Artifact groupId"
         type: string
@@ -283,13 +312,9 @@ definitions:
         minLength: 1
         maxLength: 20
         example: "1.0.0"
-      latestVersion:
-        description: "If true, only the latest versions will be returned. *This flag can only be used while search filtering.*"
-        type: boolean
-        example: true
 
   VersionInformation:
-    description: "Contains informations about the artifacts."
+    description: "Contains information about the artifacts."
     allOf:
       - $ref: '#/definitions/VersionInformationFilter'
       - type: object
@@ -300,6 +325,7 @@ definitions:
           - artifactId
           - version
           - creationDate
+          - type
         properties:
           repositoryUrl:
             description: "URL of the repository (optional)"
@@ -311,12 +337,19 @@ definitions:
             type: string
             format: date-time
             example: "2019-02-02T11:34:35.470+0000"
+          description:
+            description: "(optional) Description of the module. Can contain markdown syntax, which will be parsed to HTML."
+            type: string
+            example: '# RepoManager #
+              Dependencies and version management tool.
+              You can also use Markdown here.'
+
 
   VersionInformationContainer:
     description: "Response container object for VersionInformation lists"
     type: object
     properties:
-      versionInformations:
+      versionInformation:
         type: array
         items:
           $ref: '#/definitions/VersionInformation'
@@ -324,7 +357,7 @@ definitions:
         $ref: '#/definitions/Page'
 
   UserResponse:
-    description: "Repsonse object for user requests, that contains the userId and the valid-state."
+    description: "Response object for user requests, that contains the userId and the valid-state."
     required:
       - valid
       - userId
@@ -387,19 +420,21 @@ definitions:
         example: "my-perfect-password"
   Token:
     description: "Represents the token as a result object to the client."
-    required:
-      - token
-    type: object
-    properties:
-      token:
-        description: "Represents the JWT token. This token must be set tot all requests against secured endpoints as a part of a Bearer token at the Authorization header."
-        type: "string"
-        maxLength: 255
-        example: "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInNjb3BlcyI6W3siYXV0aG9yaXR5IjoiUk9MRV9BRE1JTiJ9XSwiaXNzIjoiUmVwb01hbmFnZXIiLCJpYXQiOjE1NDkwNjE2MTgsImV4cCI6MTU0OTA2NTIyOX0.n0CK66KFTA81XDgGF89HzIDEfuvdwUOXm1put75QiZo"
-      userId:
-        description: "User ID of the current user"
-        type: string
-        example: "5c6a1223-076b-4bc0-b0b7-20b0da0e23fd"
+    allOf:
+      - $ref: '#/definitions/Response'
+      - type: object
+        required:
+          - token
+        properties:
+          token:
+            description: "Represents the JWT token. This token must be set tot all requests against secured endpoints as a part of a Bearer token at the Authorization header."
+            type: "string"
+            maxLength: 255
+            example: "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInNjb3BlcyI6W3siYXV0aG9yaXR5IjoiUk9MRV9BRE1JTiJ9XSwiaXNzIjoiUmVwb01hbmFnZXIiLCJpYXQiOjE1NDkwNjE2MTgsImV4cCI6MTU0OTA2NTIyOX0.n0CK66KFTA81XDgGF89HzIDEfuvdwUOXm1put75QiZo"
+          userId:
+            description: "User ID of the current user"
+            type: string
+            example: "5c6a1223-076b-4bc0-b0b7-20b0da0e23fd"
   Page:
     description: "Page object for list results"
     type: object
@@ -442,7 +477,7 @@ definitions:
     description: "Response container object with status."
     type: object
     properties:
-      status:
+      _status:
         description: "If true, then the request was successful."
         type: boolean
         example: true

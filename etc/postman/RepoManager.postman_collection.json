@@ -13,10 +13,6 @@
 				},
 				"method": "GET",
 				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
 					"raw": "http://localhost:9090/actuator/health",
 					"protocol": "http",
@@ -48,7 +44,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"username\": \"admin\",\n\t\"password\": \"passsword\"\n}"
+					"raw": "{\n\t\"username\": \"admin\",\n\t\"password\": \"password\"\n}"
 				},
 				"url": {
 					"raw": "http://localhost:9090/v1/authentication/generate-token",
@@ -152,7 +148,14 @@
 			"name": "[POST] NewVersion",
 			"request": {
 				"auth": {
-					"type": "noauth"
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInNjb3BlcyI6W1t7ImF1dGhvcml0eSI6IlJPTEVfQURNSU4ifV1dLCJpc3MiOiJSZXBvTWFuYWdlciIsImlhdCI6MTU2NTczNTUwMCwiZXhwIjoxNTY1NzM5MTAwfQ.B3nYnBHk5q6AYYlKtyAjIahRYfT4lzba-BSzLfAf190",
+							"type": "string"
+						}
+					]
 				},
 				"method": "POST",
 				"header": [
@@ -164,10 +167,10 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"username\": \"admin\",\n\t\"password\": \"password\"\n}"
+					"raw": "{\r\n  \"projectName\": \"MyProject\",\r\n  \"branch\": \"master\",\r\n  \"artifact\": {\r\n    \"groupId\": \"com.project\",\r\n    \"artifactId\": \"MyLibrary\",\r\n    \"version\": \"1.0.0\"\r\n  },\r\n  \"repositoryUrl\": \"https://github.com/Ragin-LundF/repomgr\",\r\n  \"creationDate\": \"2019-03-02T20:30:35.420+0000\",\r\n  \"type\": \"LIBRARY\",\r\n  \"latestVersion\": true,\r\n  \"description\": \"# RepoManager # Dependencies and version management tool. You can also use Markdown here.\"\r\n}"
 				},
 				"url": {
-					"raw": "http://localhost:9090/v1/authentication/generate-token",
+					"raw": "http://localhost:9090/v1/repositories",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -175,8 +178,47 @@
 					"port": "9090",
 					"path": [
 						"v1",
-						"authentication",
-						"generate-token"
+						"repositories"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[POST] NewVersion Dependency",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInNjb3BlcyI6W1t7ImF1dGhvcml0eSI6IlJPTEVfQURNSU4ifV1dLCJpc3MiOiJSZXBvTWFuYWdlciIsImlhdCI6MTU2NTczNTUwMCwiZXhwIjoxNTY1NzM5MTAwfQ.B3nYnBHk5q6AYYlKtyAjIahRYfT4lzba-BSzLfAf190",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"projectName\": \"MyProject\",\r\n  \"branch\": \"master\",\r\n  \"artifact\": {\r\n    \"groupId\": \"com.project\",\r\n    \"artifactId\": \"MyApplication\",\r\n    \"version\": \"1.0.0\"\r\n  },\r\n  \"repositoryUrl\": \"https://github.com/Ragin-LundF/repomgr\",\r\n  \"creationDate\": \"2019-03-02T20:30:35.420+0000\",\r\n  \"type\": \"APPLICATION\",\r\n  \"latestVersion\": true,\r\n  \"description\": \"The application with library dependency.\",\r\n  \"dependencies\": [\r\n  \t\t{\r\n  \t\t\t\"groupId\": \"com.project\",\r\n    \t\t\"artifactId\": \"MyLibrary\",\r\n    \t\t\"version\": \"1.0.0\"\r\n  \t\t}\r\n  \t]\r\n}"
+				},
+				"url": {
+					"raw": "http://localhost:9090/v1/repositories",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9090",
+					"path": [
+						"v1",
+						"repositories"
 					]
 				}
 			},
@@ -185,6 +227,16 @@
 		{
 			"name": "[POST] Search Repositories",
 			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInNjb3BlcyI6W1t7ImF1dGhvcml0eSI6IlJPTEVfQURNSU4ifV1dLCJpc3MiOiJSZXBvTWFuYWdlciIsImlhdCI6MTU2NTczNTUwMCwiZXhwIjoxNTY1NzM5MTAwfQ.B3nYnBHk5q6AYYlKtyAjIahRYfT4lzba-BSzLfAf190",
+							"type": "string"
+						}
+					]
+				},
 				"method": "POST",
 				"header": [
 					{
@@ -195,10 +247,10 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"branch\": \"develop\"\n}"
+					"raw": "{\n\t\"branch\": \"master\"\n}"
 				},
 				"url": {
-					"raw": "http://localhost:9090/v1/repositories/search?page=1&size=5&sortField=version&sortDirection=ASC",
+					"raw": "http://localhost:9090/v1/repositories/search?page=0&size=5&sortField=version&sortDirection=ASC",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -212,7 +264,7 @@
 					"query": [
 						{
 							"key": "page",
-							"value": "1"
+							"value": "0"
 						},
 						{
 							"key": "size",

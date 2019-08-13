@@ -16,5 +16,5 @@ public class Constants {
     public static final String ROLE_ADMIN = "ROLE_ADMIN";
 
     // URI JWT check whitelist
-    public static final List<String> NO_AUTH_URLS = Arrays.asList("/actuator", "/v1/authentication", "/v1/repositories/search");
+    public static final List<String> NO_AUTH_URLS = Arrays.asList("/actuator", "/v1/authentication", "/v1/repositories/search", "/public", "/favicon.ico");
 }

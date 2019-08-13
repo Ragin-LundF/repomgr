@@ -7,7 +7,7 @@ This tool is build to manage versions from CI/CD processes.
 It can be used at the build-pipeline to store artifact versions and additional information to a central database.
 There are possibilities to differ between branch versions and projects.
 
-![alt text](etc/img/diagram.png "Logo Title Text 1")
+![alt text](etc/img/diagram.png "Overview")
 
 # RepoMgr UI #
 
@@ -128,13 +128,13 @@ If valid is false, then something went wrong (mostly username already exists).
 Now a jenkins can post a new build version information with the following command:
 
 ```bash
-curl -d '{"projectName":"MyProject","branch":"master","groupId":"com.project","artifactId":"MyLibrary","version":"1.0.0","repositoryUrl":"https://github.com/Ragin-LundF/repomgr","creationDate":"2019-03-02T20:30:35.420+0000"}' -X POST "http://localhost:9090/v1/repositories" -H "accept: application/json" -H "Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInNjb3BlcyI6W1t7ImF1dGhvcml0eSI6IlJPTEVfQURNSU4ifV1dLCJpc3MiOiJSZXBvTWFuYWdlciIsImlhdCI6MTU0OTIyMzgxMiwiZXhwIjoxNTQ5MjI3NDEyfQ.LPki3LvCaWdkkW-O7grZ66eCKT9QdK76jsSjyLZQ4uw" -H "Content-Type: application/json"
+curl -d '{"projectName": "MyProject", "branch": "master", "artifact": {"groupId": "com.project", "artifactId": "MyLibrary", "version": "1.0.0"}, "repositoryUrl": "https://github.com/Ragin-LundF/repomgr", "creationDate": "2019-03-02T20:30:35.420+0000", "type": "LIBRARY", "latestVersion": true, "description": "# RepoManager # Dependencies and version management tool. You can also use Markdown here."}' -X POST "http://localhost:9090/v1/repositories" -H "accept: application/json" -H "Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInNjb3BlcyI6W1t7ImF1dGhvcml0eSI6IlJPTEVfQURNSU4ifV1dLCJpc3MiOiJSZXBvTWFuYWdlciIsImlhdCI6MTU0OTIyMzgxMiwiZXhwIjoxNTQ5MjI3NDEyfQ.LPki3LvCaWdkkW-O7grZ66eCKT9QdK76jsSjyLZQ4uw" -H "Content-Type: application/json"
 ```
 
 The result of this POST should look like:
 
 ```json
-{"status":true}
+{"_status":true}
 ```
 
 ## Querying the repository ##
@@ -148,7 +148,7 @@ curl -d '{"groupId":"com.project","artifactId":"MyLibrary","latestVersion":true}
 Which should result in:
 
 ```bash
-{"versionInformations":[{"projectName":"MyProject","branch":"master","groupId":"com.project","artifactId":"MyLibrary","version":"1.0.0","repositoryUrl":"https://github.com/Ragin-LundF/repomgr","creationDate":"2019-03-02T20:30:35.420+0000"}],"page":{"totalElements":1,"totalPages":1,"currentPage":1,"numberOfElements":1}}
+{"versionInformation":[{"projectName":"MyProject","branch":"master","groupId":"com.project","artifactId":"MyLibrary","version":"1.0.0","repositoryUrl":"https://github.com/Ragin-LundF/repomgr","creationDate":"2019-03-02T20:30:35.420+0000"}],"page":{"totalElements":1,"totalPages":1,"currentPage":1,"numberOfElements":1}}
 ```
 
 With the `"latestVersion":true` flag at the request, Repository Manager searches only for the latest version.
@@ -240,3 +240,7 @@ Stopping the environment:
 ```bash
 docker-compose down
 ```
+
+# Screenshot #
+
+![alt text](etc/img/screenshot.png "Screenshot")

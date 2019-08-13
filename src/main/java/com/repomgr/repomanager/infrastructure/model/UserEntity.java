@@ -3,21 +3,21 @@ package com.repomgr.repomanager.infrastructure.model;
 import javax.persistence.*;
 import java.io.Serializable;
 
-@Entity(name = "repo_user")
+@Entity(name = "REPO_USER")
 public class UserEntity implements Serializable {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
-    @Column(name = "id", length = 50, nullable = false)
+    @Column(name = "ID", length = 50, nullable = false)
     private long id;
-    @Column(name = "username", length = 100, nullable = false)
+    @Column(name = "USERNAME", length = 100, nullable = false)
     private String username;
-    @Column(name = "password", length = 255, nullable = false)
+    @Column(name = "PASSWORD", length = 255, nullable = false)
     private String password;
-    @Column(name = "user_id", length = 100, nullable = false)
+    @Column(name = "USER_ID", length = 100, nullable = false)
     private String userId;
-    @Column(name = "project_name", length = 100, nullable = false)
+    @Column(name = "PROJECT_NAME", length = 100, nullable = false)
     private String projectName;
-    @Column(name = "role", length = 100, nullable = false)
+    @Column(name = "ROLE", length = 100, nullable = false)
     private String role;
 
     public long getId() {
