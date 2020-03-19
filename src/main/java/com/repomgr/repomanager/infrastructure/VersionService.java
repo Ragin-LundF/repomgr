@@ -1,6 +1,7 @@
 package com.repomgr.repomanager.infrastructure;
 
 import com.repomgr.repomanager.constants.Constants;
+import com.repomgr.repomanager.infrastructure.mapper.VersionMapper;
 import com.repomgr.repomanager.infrastructure.model.VersionEntity;
 import com.repomgr.repomanager.infrastructure.repository.VersionRepository;
 import com.repomgr.repomanager.rest.model.artifacts.ArtifactDto;
@@ -33,10 +34,12 @@ import java.util.UUID;
 public class VersionService {
     private static final Logger LOG = LoggerFactory.getLogger(VersionService.class);
     private final VersionRepository versionRepository;
+    private final VersionMapper versionMapper;
 
     @Autowired
-    public VersionService(VersionRepository versionRepository) {
+    public VersionService(VersionRepository versionRepository, VersionMapper versionMapper) {
         this.versionRepository = versionRepository;
+        this.versionMapper = versionMapper;
     }
 
     /**
@@ -98,20 +101,12 @@ public class VersionService {
                 version.setDependencies(null);
 
                 // Map artifact
-                ArtifactDto artifactDto = new ArtifactDto();
-                artifactDto.setVersion(versionEntity.getVersion());
-                artifactDto.setGroupId(versionEntity.getGroupId());
-                artifactDto.setArtifactId(versionEntity.getArtifactId());
+                ArtifactDto artifactDto = versionMapper.fromVersionEntity(versionEntity);
                 version.setArtifact(artifactDto);
 
                 // Map dependencies
                 if (! Collections.isEmpty(versionEntity.getDependencies())) {
-                    ArrayList<ArtifactDto> artifactDtoArrayList = new ArrayList<>();
-                    for (VersionEntity versionDependencyEntity : versionEntity.getDependencies()) {
-                        ArtifactDto depArtifactDto = new ArtifactDto();
-                        BeanUtils.copyProperties(versionDependencyEntity, depArtifactDto);
-                        artifactDtoArrayList.add(depArtifactDto);
-                    }
+                    ArrayList<ArtifactDto> artifactDtoArrayList = versionMapper.depsFromVersionEntities(versionEntity);
                     version.setDependencies(artifactDtoArrayList);
                 }
                 versionList.add(version);
@@ -119,11 +114,7 @@ public class VersionService {
         }
 
         // map pages
-        PageDto pageDto = new PageDto();
-        pageDto.setTotalElements(pagedResult.getTotalElements());
-        pageDto.setTotalPages(pagedResult.getTotalPages());
-        pageDto.setCurrentPage(1 + pagedResult.getNumber());
-        pageDto.setNumberOfElements(pagedResult.getNumberOfElements());
+        PageDto pageDto = versionMapper.fromPageVersionEntity(pagedResult);
 
         // map version information
         VersionInformationContainerDto versionInformationContainerDto = new VersionInformationContainerDto();
