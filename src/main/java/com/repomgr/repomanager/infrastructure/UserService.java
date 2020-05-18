@@ -98,7 +98,7 @@ public class UserService implements UserDetailsService {
      * @return              true if successful, false if failed.
      */
     @Transactional
-    public boolean deleteByUserId(String userId) {
+    public boolean deleteByUserId(final String userId) {
         LOG.debug("[UserService][deleteByUserId] Delete user in service started.");
         boolean successful = false;
         UserEntity userEntity = userRepository.findUserEntityByUserId(userId);
@@ -117,7 +117,7 @@ public class UserService implements UserDetailsService {
      * @param role  Role
      * @return      List of granted authorities
      */
-    public List<SimpleGrantedAuthority> lookupAuthority(String role) {
+    public List<SimpleGrantedAuthority> lookupAuthority(final String role) {
         LOG.debug("[UserService][lookupAuthority] Lookup authority in service executed.");
         return Collections.singletonList(new SimpleGrantedAuthority(role));
     }
@@ -154,7 +154,7 @@ public class UserService implements UserDetailsService {
      * @throws UsernameNotFoundException no username was found
      */
     @Override
-    public UserDetails loadUserByUsername(String username) {
+    public UserDetails loadUserByUsername(final String username) {
         LOG.debug("[UserService][loadUserByUsername] Lookup user by username in service started.");
         UserDto userDto = new UserDto();
         userDto.setUsername(username);

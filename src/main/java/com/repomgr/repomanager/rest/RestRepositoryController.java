@@ -1,9 +1,9 @@
 package com.repomgr.repomanager.rest;
 
 import com.repomgr.repomanager.infrastructure.VersionService;
-import com.repomgr.repomanager.rest.model.common.ResponseDto;
 import com.repomgr.repomanager.rest.model.artifacts.VersionInformationContainerDto;
 import com.repomgr.repomanager.rest.model.artifacts.VersionInformationDto;
+import com.repomgr.repomanager.rest.model.common.ResponseDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
-import javax.print.attribute.standard.Media;
 import javax.validation.constraints.Max;
 
 /**
@@ -74,7 +73,6 @@ public class RestRepositoryController {
             @Nullable @RequestParam Integer page,
             @Nullable @Max(100) @RequestParam Integer size
     ) {
-        ResponseEntity<ResponseDto> response;
         LOG.debug("[RestRepositoryController][listVersions] List versions request accepted.");
 
         // Paging
@@ -82,7 +80,7 @@ public class RestRepositoryController {
         page = (page == null) ? 0 : page;
         Pageable pageable;
         if (!StringUtils.isEmpty(sortField) && ! StringUtils.isEmpty(sortDirection)) {
-            pageable = PageRequest.of(page, size, new Sort(sortDirection, sortField));
+            pageable = PageRequest.of(page, size, Sort.by(sortDirection, sortField));
         } else {
             pageable = PageRequest.of(page, size);
         }

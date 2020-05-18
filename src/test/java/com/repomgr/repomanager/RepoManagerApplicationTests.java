@@ -192,6 +192,7 @@ public class RepoManagerApplicationTests {
         userDto.setPassword("test");
         userDto.setRole(Constants.ROLE_USER);
         userDto.setValid(null);
+        userDto.setProjectName("myproject");
 
         ObjectMapper objectMapper = new ObjectMapper();
         String body = objectMapper.writeValueAsString(userDto);
