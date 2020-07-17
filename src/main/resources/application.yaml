@@ -1,6 +1,8 @@
 # Server configuration
 server:
   port: ${port:9090}
+  error:
+    path: "redirect:/public/index.html"
 
 # Spring and datasource configuration
 spring:
@@ -17,6 +19,7 @@ spring:
       hibernate:
         show_sql: false
         format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQL10Dialect
         temp:
           use_jdbc_metadata_defaults: false
 security:

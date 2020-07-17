@@ -6,10 +6,10 @@
     "start": "webpack-dev-server --open"
   },
   "dependencies": {
+    "lodash": "^4.17.19",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "react-table": "^6.11.5",
-    "lodash": ">=4.17.13"
+    "react-table": "^6.11.5"
   },
   "devDependencies": {
     "babel-core": "^6.26.3",

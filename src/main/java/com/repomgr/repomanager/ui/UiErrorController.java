@@ -12,8 +12,15 @@ public class UiErrorController implements ErrorController {
         return "redirect:/public/index.html";
     }
 
+    /**
+     * The return value from this method is not used; the property `server.error.path`
+     * must be set to override the default error page path.
+     * @return the error path
+     * @deprecated since 2.3.0 in favor of setting the property `server.error.path`
+     */
     @Override
+    @Deprecated
     public String getErrorPath() {
-        return "redirect:/public/index.html";
+        return null;
     }
 }

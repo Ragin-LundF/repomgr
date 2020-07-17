@@ -8,7 +8,7 @@ plugins {
     id "idea"
     id "java"
     id "application"
-    id "org.springframework.boot" version "2.3.0.RELEASE"
+    id "org.springframework.boot" version "2.3.1.RELEASE"
     id "io.spring.dependency-management" version "1.0.9.RELEASE"
     id "maven"
     id "maven-publish"
@@ -39,6 +39,7 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-starter-security"
     implementation "org.springframework.boot:spring-boot-starter-web"
     implementation "org.springframework.boot:spring-boot-starter-data-jpa"
+    implementation "com.google.code.findbugs:jsr305:${versionGoogleJsr305}"
     implementation "io.jsonwebtoken:jjwt:${versionJjwt}"
     implementation "org.liquibase:liquibase-core"
     implementation "javax.validation:validation-api"
@@ -47,6 +48,8 @@ dependencies {
     testImplementation "org.springframework.boot:spring-boot-starter-test"
     testImplementation "org.springframework.security:spring-security-test"
     testRuntime "com.h2database:h2:${versionTestH2}"
+    annotationProcessor "org.springframework:spring-context-indexer"
+    compile 'org.springframework.experimental:spring-graal-native:0.6.1.RELEASE'
 }
 
 bootJar {
