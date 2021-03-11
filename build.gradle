@@ -61,14 +61,31 @@ bootJar {
     }
 }
 
+
 publishing {
     publications {
         maven(MavenPublication) {
-            groupId = "${groupIdName}"
-            artifactId = "${artifactIdName}"
-            version = "${version}"
-
             from components.java
+            artifactId "repomanager"
+            version "${version}"
+            pom.withXml {
+                def root = asNode()
+                root.appendNode('description', 'Manage different products/projects/libraries and make them searchable with a simlpe UI.')
+                root.appendNode('name', 'repomanager')
+                root.appendNode('url', 'https://github.com/Ragin-LundF/repomanager')
+                root.children().last() + pomConfig
+            }
+        }
+    }
+
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/Ragin-LundF/repomanager")
+            credentials {
+                username = System.getenv("GITHUB_ACTOR")
+                password = System.getenv("GITHUB_TOKEN")
+            }
         }
     }
 }
