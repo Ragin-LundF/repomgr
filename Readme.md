@@ -1,6 +1,5 @@
 # Repository Manager #
 
-[![Build Status](https://dev.azure.com/ragin666/RepoMgr/_apis/build/status/RepoMgr-Gradle-CI?branchName=master&jobName=RepoMgr%20Build)](https://dev.azure.com/ragin666/RepoMgr/_build/latest?definitionId=6&branchName=master)
 [![Maintainability](https://api.codeclimate.com/v1/badges/4e5377d9a658ea96f4d7/maintainability)](https://codeclimate.com/github/Ragin-LundF/repomgr/maintainability)
 
 This tool is build to manage versions from CI/CD processes.
