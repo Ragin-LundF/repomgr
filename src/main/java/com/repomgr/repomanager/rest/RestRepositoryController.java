@@ -4,6 +4,7 @@ import com.repomgr.repomanager.infrastructure.VersionService;
 import com.repomgr.repomanager.rest.model.artifacts.VersionInformationContainerDto;
 import com.repomgr.repomanager.rest.model.artifacts.VersionInformationDto;
 import com.repomgr.repomanager.rest.model.common.ResponseDto;
+import javax.validation.constraints.Max;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,10 +16,12 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.*;
-
-import javax.validation.constraints.Max;
+import org.springframework.util.ObjectUtils;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * REST Controller for handling all repositories related requests.
@@ -30,7 +33,7 @@ public class RestRepositoryController {
     private final VersionService versionService;
 
     @Autowired
-    public RestRepositoryController(VersionService versionService) {
+    public RestRepositoryController(final VersionService versionService) {
         this.versionService = versionService;
     }
 
@@ -45,11 +48,11 @@ public class RestRepositoryController {
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<ResponseDto> pushNewVersion(@RequestBody VersionInformationDto versionInformationDto) {
+    public ResponseEntity<ResponseDto> pushNewVersion(final @RequestBody VersionInformationDto versionInformationDto) {
         ResponseEntity<ResponseDto> response;
         LOG.debug("[RestRepositoryController][pushNewVersion] Push new version request accepted.");
 
-        ResponseDto responseDto = versionService.pushNewVersion(versionInformationDto);
+        final var responseDto = versionService.pushNewVersion(versionInformationDto);
 
         if (responseDto.isStatus()) {
             response = new ResponseEntity<>(responseDto, HttpStatus.CREATED);
@@ -67,26 +70,26 @@ public class RestRepositoryController {
             consumes = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<VersionInformationContainerDto> listVersions(
-            @RequestBody VersionInformationDto versionInformationDto,
-            @Nullable @RequestParam String sortField,
-            @Nullable @RequestParam Sort.Direction sortDirection,
-            @Nullable @RequestParam Integer page,
-            @Nullable @Max(100) @RequestParam Integer size
+            @RequestBody final VersionInformationDto versionInformationDto,
+            @Nullable @RequestParam final String sortField,
+            @Nullable @RequestParam final Sort.Direction sortDirection,
+            @Nullable @RequestParam final Integer aPage,
+            @Nullable @Max(100) @RequestParam final Integer aSize
     ) {
         LOG.debug("[RestRepositoryController][listVersions] List versions request accepted.");
 
         // Paging
-        size = (size == null) ? 10 : size;
-        page = (page == null) ? 0 : page;
+        final var size = (aSize == null) ? 10 : aSize;
+        final var page = (aPage == null) ? 0 : aPage;
         Pageable pageable;
-        if (!StringUtils.isEmpty(sortField) && ! StringUtils.isEmpty(sortDirection)) {
+        if (!ObjectUtils.isEmpty(sortField) && ! ObjectUtils.isEmpty(sortDirection)) {
             pageable = PageRequest.of(page, size, Sort.by(sortDirection, sortField));
         } else {
             pageable = PageRequest.of(page, size);
         }
 
         // get data and return
-        VersionInformationContainerDto versionInformationContainer = versionService.listVersionInformation(versionInformationDto, pageable);
+        final var versionInformationContainer = versionService.listVersionInformation(versionInformationDto, pageable);
 
         LOG.debug("[RestRepositoryController][listVersions] List versions request finished.");
         return new ResponseEntity<>(versionInformationContainer, HttpStatus.OK);

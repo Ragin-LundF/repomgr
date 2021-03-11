@@ -3,7 +3,6 @@ package com.repomgr.repomanager.rest;
 import com.repomgr.repomanager.constants.Constants;
 import com.repomgr.repomanager.infrastructure.UserService;
 import com.repomgr.repomanager.rest.model.common.MessageDto;
-import com.repomgr.repomanager.rest.model.common.ResponseDto;
 import com.repomgr.repomanager.rest.model.user.TokenDto;
 import com.repomgr.repomanager.rest.model.user.UserDto;
 import com.repomgr.repomanager.security.JwtTokenUtil;
@@ -15,10 +14,13 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * REST Controller for handling all authentication related requests.
@@ -33,7 +35,10 @@ public class RestAuthenticationController {
     private final UserService userService;
 
     @Autowired
-    public RestAuthenticationController(AuthenticationManager authenticationManager, JwtTokenUtil jwtTokenUtil, UserService userService) {
+    public RestAuthenticationController(final AuthenticationManager authenticationManager,
+                                        final JwtTokenUtil jwtTokenUtil,
+                                        final UserService userService
+    ) {
         this.authenticationManager = authenticationManager;
         this.jwtTokenUtil = jwtTokenUtil;
         this.userService = userService;
@@ -51,29 +56,28 @@ public class RestAuthenticationController {
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<TokenDto> generateToken(@RequestBody UserDto userDto) {
-        ResponseEntity<ResponseDto> response;
+    public ResponseEntity<TokenDto> generateToken(final @RequestBody UserDto userDto) {
         LOG.debug("[RestAuthenticationController][generateToken] Generate token request accepted.");
 
-        TokenDto tokenDto = new TokenDto();
+        final var tokenDto = new TokenDto();
         try {
-            final Authentication authentication = authenticationManager.authenticate(
+            final var authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
                             userDto.getUsername(),
                             userDto.getPassword()
                     )
             );
             SecurityContextHolder.getContext().setAuthentication(authentication);
-            final UserDto user = userService.lookupUser(userDto);
-            final String token = jwtTokenUtil.generateToken(user);
-            tokenDto = new TokenDto(token, userDto.getUserId());
+            final var user = userService.lookupUser(userDto);
+            final var token = jwtTokenUtil.generateToken(user);
+            tokenDto.setToken(token);
+            tokenDto.setUserId(userDto.getUserId());
             tokenDto.setStatus(true);
         } catch (AuthenticationException ae) {
             MessageDto messageDto = new MessageDto();
             messageDto.setCategory(Constants.REST_MESSAGE_CODE_ERROR);
             messageDto.setMessage("Unable to create token. Wrong credentials.");
 
-            tokenDto = new TokenDto();
             tokenDto.setStatus(false);
             tokenDto.setMessage(messageDto);
             LOG.warn("[RestAuthenticationController][generateToken] Can not create token. Wrong credentials given.");

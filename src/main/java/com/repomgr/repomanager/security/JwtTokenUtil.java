@@ -6,16 +6,15 @@ import com.repomgr.repomanager.rest.model.user.UserDto;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import java.util.Collections;
+import java.util.Date;
+import java.util.function.Function;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
-
-import java.util.Collections;
-import java.util.Date;
-import java.util.function.Function;
+import org.springframework.util.ObjectUtils;
 
 /**
  * Utilitiy class for JWT token handling.
@@ -29,7 +28,7 @@ public class JwtTokenUtil {
     private final UserService userService;
 
     @Autowired
-    public JwtTokenUtil(RepoManagerProperties repoManagerProperties, UserService userService) {
+    public JwtTokenUtil(final RepoManagerProperties repoManagerProperties, final UserService userService) {
         this.repoManagerProperties = repoManagerProperties;
         this.userService = userService;
     }
@@ -48,9 +47,9 @@ public class JwtTokenUtil {
      * @param userDetails   User Details to compare.
      * @return              true if token was valid
      */
-    public boolean validateToken(String token, UserDetails userDetails) {
+    public boolean validateToken(final String token, final UserDetails userDetails) {
         LOG.debug("[JwtTokenUtil][validateToken] Validate token claim lookup started.");
-        final String username = lookupClaim(token, Claims::getSubject);
+        final var username = lookupClaim(token, Claims::getSubject);
         LOG.debug("[JwtTokenUtil][validateToken] Validate token claim lookup finished.");
 
         return (username.equals(userDetails.getUsername()) && ! isTokenExpired(token));
@@ -62,10 +61,10 @@ public class JwtTokenUtil {
      * @param token     JWT token
      * @return          true if token is expired
      */
-    private Boolean isTokenExpired(String token) {
+    private Boolean isTokenExpired(final String token) {
         LOG.debug("[JwtTokenUtil][isTokenExpired] Token expiry check started.");
 
-        final Date expiration = lookupClaim(token, Claims::getExpiration);
+        final var expiration = lookupClaim(token, Claims::getExpiration);
 
         LOG.debug("[JwtTokenUtil][isTokenExpired] Token expiry check finished.");
         return expiration.before(new Date());
@@ -79,13 +78,13 @@ public class JwtTokenUtil {
      * @param user      User informations
      * @return          JWT token as string
      */
-    public String generateToken(UserDto user) {
+    public String generateToken(final UserDto user) {
         LOG.debug("[JwtTokenUtil][generateToken] Generate token started.");
 
-        Claims claims = Jwts.claims().setSubject(user.getUsername());
+        final var claims = Jwts.claims().setSubject(user.getUsername());
         claims.put("scopes", Collections.singletonList(userService.lookupAuthority(user.getRole())));
 
-        String token = Jwts.builder()
+        final var token = Jwts.builder()
                 .setClaims(claims)
                 .setIssuer("RepoManager")
                 .setIssuedAt(new Date(System.currentTimeMillis()))
@@ -109,12 +108,12 @@ public class JwtTokenUtil {
      * @param <T>               Resolver class
      * @return                  Content of the claim
      */
-    public <T> T lookupClaim(String token, Function<Claims, T> claimsResolver) {
+    public <T> T lookupClaim(final String token, final Function<Claims, T> claimsResolver) {
         LOG.debug("[JwtTokenUtil][lookupClaim] Lookup token claim started.");
         T apply = null;
 
-        if (! StringUtils.isEmpty(token)) {
-            final Claims claims = Jwts.parser()
+        if (! ObjectUtils.isEmpty(token)) {
+            final var claims = Jwts.parser()
                     .setSigningKey(repoManagerProperties.getSecurity().getSigningKey())
                     .parseClaimsJws(token)
                     .getBody();

@@ -1,11 +1,10 @@
 package com.repomgr.repomanager.rest.model.artifacts;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.util.Date;
 import java.util.List;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  * VersionInformation DTO for repository and artifact related information.
@@ -37,7 +36,7 @@ public class VersionInformationDto {
         return projectName;
     }
 
-    public void setProjectName(String projectName) {
+    public void setProjectName(final String projectName) {
         this.projectName = projectName;
     }
 
@@ -45,7 +44,7 @@ public class VersionInformationDto {
         return branch;
     }
 
-    public void setBranch(String branch) {
+    public void setBranch(final String branch) {
         this.branch = branch;
     }
 
@@ -53,7 +52,7 @@ public class VersionInformationDto {
         return artifact;
     }
 
-    public void setArtifact(ArtifactDto artifact) {
+    public void setArtifact(final ArtifactDto artifact) {
         this.artifact = artifact;
     }
 
@@ -61,7 +60,7 @@ public class VersionInformationDto {
         return dependencies;
     }
 
-    public void setDependencies(List<ArtifactDto> dependencies) {
+    public void setDependencies(final List<ArtifactDto> dependencies) {
         this.dependencies = dependencies;
     }
 
@@ -69,7 +68,7 @@ public class VersionInformationDto {
         return repositoryUrl;
     }
 
-    public void setRepositoryUrl(String repositoryUrl) {
+    public void setRepositoryUrl(final String repositoryUrl) {
         this.repositoryUrl = repositoryUrl;
     }
 
@@ -77,7 +76,7 @@ public class VersionInformationDto {
         return creationDate;
     }
 
-    public void setCreationDate(Date creationDate) {
+    public void setCreationDate(final Date creationDate) {
         this.creationDate = creationDate;
     }
 
@@ -85,7 +84,7 @@ public class VersionInformationDto {
         return latestVersion;
     }
 
-    public void setLatestVersion(Boolean latestVersion) {
+    public void setLatestVersion(final Boolean latestVersion) {
         this.latestVersion = latestVersion;
     }
 
@@ -93,7 +92,7 @@ public class VersionInformationDto {
         return description;
     }
 
-    public void setDescription(String description) {
+    public void setDescription(final String description) {
         this.description = description;
     }
 
@@ -101,7 +100,7 @@ public class VersionInformationDto {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(final String type) {
         this.type = type;
     }
 
@@ -109,7 +108,7 @@ public class VersionInformationDto {
         return uid;
     }
 
-    public void setUid(String uid) {
+    public void setUid(final String uid) {
         this.uid = uid;
     }
 }

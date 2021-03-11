@@ -1,9 +1,18 @@
 package com.repomgr.repomanager.infrastructure.model;
 
-import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.OneToMany;
 
 @Entity(name = "REPO_VERSION")
 public class VersionEntity implements Serializable {
@@ -43,7 +52,7 @@ public class VersionEntity implements Serializable {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(final Long id) {
         this.id = id;
     }
 
@@ -51,7 +60,7 @@ public class VersionEntity implements Serializable {
         return projectName;
     }
 
-    public void setProjectName(String projectName) {
+    public void setProjectName(final String projectName) {
         this.projectName = projectName;
     }
 
@@ -59,7 +68,7 @@ public class VersionEntity implements Serializable {
         return branch;
     }
 
-    public void setBranch(String branch) {
+    public void setBranch(final String branch) {
         this.branch = branch;
     }
 
@@ -67,7 +76,7 @@ public class VersionEntity implements Serializable {
         return groupId;
     }
 
-    public void setGroupId(String groupId) {
+    public void setGroupId(final String groupId) {
         this.groupId = groupId;
     }
 
@@ -75,7 +84,7 @@ public class VersionEntity implements Serializable {
         return artifactId;
     }
 
-    public void setArtifactId(String artifactId) {
+    public void setArtifactId(final String artifactId) {
         this.artifactId = artifactId;
     }
 
@@ -83,7 +92,7 @@ public class VersionEntity implements Serializable {
         return version;
     }
 
-    public void setVersion(String version) {
+    public void setVersion(final String version) {
         this.version = version;
     }
 
@@ -91,7 +100,7 @@ public class VersionEntity implements Serializable {
         return repositoryUrl;
     }
 
-    public void setRepositoryUrl(String repositoryUrl) {
+    public void setRepositoryUrl(final String repositoryUrl) {
         this.repositoryUrl = repositoryUrl;
     }
 
@@ -99,7 +108,7 @@ public class VersionEntity implements Serializable {
         return creationDate;
     }
 
-    public void setCreationDate(Date creationDate) {
+    public void setCreationDate(final Date creationDate) {
         this.creationDate = creationDate;
     }
 
@@ -107,7 +116,7 @@ public class VersionEntity implements Serializable {
         return description;
     }
 
-    public void setDescription(String description) {
+    public void setDescription(final String description) {
         this.description = description;
     }
 
@@ -115,7 +124,7 @@ public class VersionEntity implements Serializable {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(final String type) {
         this.type = type;
     }
 
@@ -123,7 +132,7 @@ public class VersionEntity implements Serializable {
         return uid;
     }
 
-    public void setUid(String uid) {
+    public void setUid(final String uid) {
         this.uid = uid;
     }
 
@@ -131,7 +140,7 @@ public class VersionEntity implements Serializable {
         return dependencies;
     }
 
-    public void setDependencies(List<VersionEntity> dependencies) {
+    public void setDependencies(final List<VersionEntity> dependencies) {
         this.dependencies = dependencies;
     }
 }

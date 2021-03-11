@@ -6,23 +6,21 @@ import com.repomgr.repomanager.security.JwtTokenUtil;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.SignatureException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
-import org.springframework.util.StringUtils;
-import org.springframework.web.filter.OncePerRequestFilter;
-
+import java.io.IOException;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.lang.NonNull;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 /**
  * Filter for JWT token management.
@@ -50,18 +48,21 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
      * @throws ServletException servlet exception
      */
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
+    protected void doFilterInternal(final HttpServletRequest request,
+                                    @NonNull final HttpServletResponse response,
+                                    @NonNull final FilterChain chain
+    ) throws IOException, ServletException {
         logger.debug("[JwtAuthenticationFilter][doFilterInternal] Filter execution started");
         if (!isWhitelistUri(request.getRequestURI())) {
-            String header = request.getHeader(repoManagerProperties.getSecurity().getHeaderName());
-            String token = readTokenFromHeader(header);
-            String username = readUsernameFromToken(token);
+            final var header = request.getHeader(repoManagerProperties.getSecurity().getHeaderName());
+            final var token = readTokenFromHeader(header);
+            final var username = readUsernameFromToken(token);
 
-            if (!StringUtils.isEmpty(username) && SecurityContextHolder.getContext().getAuthentication() == null) {
-                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+            if (!ObjectUtils.isEmpty(username) && SecurityContextHolder.getContext().getAuthentication() == null) {
+                final var userDetails = userDetailsService.loadUserByUsername(username);
 
                 if (jwtTokenUtil.validateToken(token, userDetails)) {
-                    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                    final var authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                     authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                     logger.debug("User [" + username + "] logged in.");
@@ -79,7 +80,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
      * @param header    Header
      * @return          Token only or null
      */
-    private String readTokenFromHeader(String header) {
+    private String readTokenFromHeader(final String header) {
         logger.debug("[JwtAuthenticationFilter][readTokenFromHeader] Read token from header started.");
         String token = null;
         if (StringUtils.startsWithIgnoreCase(header, TOKEN_PREFIX)) {
@@ -100,10 +101,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
      * @param token     Token
      * @return          Username or null
      */
-    private String readUsernameFromToken(String token) {
+    private String readUsernameFromToken(final String token) {
         logger.debug("[JwtAuthenticationFilter][readUsernameFromToken] Read username from token started.");
         String username = null;
-        if (! StringUtils.isEmpty(token)) {
+        if (! ObjectUtils.isEmpty(token)) {
             try {
                 username = jwtTokenUtil.lookupClaim(token, Claims::getSubject);
             } catch (IllegalArgumentException e) {
@@ -126,10 +127,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
      *
      * @see Constants#NO_AUTH_URLS
      */
-    private boolean isWhitelistUri(String uri) {
+    private boolean isWhitelistUri(final String uri) {
         logger.debug("[JwtAuthenticationFilter][isWhitelistUri] Whitelist check started.");
-        boolean whitelist = false;
-        for (String whitelistUri : Constants.NO_AUTH_URLS) {
+        var whitelist = false;
+        for (final String whitelistUri : Constants.NO_AUTH_URLS) {
             if (uri.contains(whitelistUri)) {
                 whitelist = true;
                 break;

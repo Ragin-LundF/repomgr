@@ -3,6 +3,9 @@ package com.repomgr.repomanager.infrastructure;
 import com.repomgr.repomanager.infrastructure.model.UserEntity;
 import com.repomgr.repomanager.infrastructure.repository.UserRepository;
 import com.repomgr.repomanager.rest.model.user.UserDto;
+import java.util.Collections;
+import java.util.List;
+import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -15,11 +18,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
+import org.springframework.util.ObjectUtils;
 
 /**
  * User service for handling user related actions.
@@ -35,7 +34,9 @@ public class UserService implements UserDetailsService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Autowired
-    public UserService(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
+    public UserService(final UserRepository userRepository,
+                       final BCryptPasswordEncoder bCryptPasswordEncoder
+    ) {
         this.userRepository = userRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
@@ -48,11 +49,11 @@ public class UserService implements UserDetailsService {
      * @param userDto   userDto object with filled username field.
      * @return          filled userDto from database
      */
-    public UserDto lookupUser(UserDto userDto) {
+    public UserDto lookupUser(final UserDto userDto) {
         LOG.debug("[UserService][lookupUser] Lookup user in service started.");
 
-        UserEntity userEntity = userRepository.findFirstByUsername(userDto.getUsername());
-        if (! StringUtils.isEmpty(userEntity.getUsername()) && ! StringUtils.isEmpty(userEntity.getId())) {
+        final var userEntity = userRepository.findFirstByUsername(userDto.getUsername());
+        if (! ObjectUtils.isEmpty(userEntity.getUsername()) && ! ObjectUtils.isEmpty(userEntity.getId())) {
             BeanUtils.copyProperties(userEntity, userDto);
             userDto.setValid(true);
         } else {
@@ -70,18 +71,19 @@ public class UserService implements UserDetailsService {
      * @return          userDto object with new userId.
      */
     @Transactional
-    public UserDto storeUser(UserDto userDto) {
+    public UserDto storeUser(final UserDto userDto) {
         LOG.debug("[UserService][storeUser] Store user in service started.");
-        UserEntity dbUser = userRepository.findFirstByUsername(userDto.getUsername());
+        final var dbUser = userRepository.findFirstByUsername(userDto.getUsername());
         if (dbUser == null) {
-            UserEntity userEntity = new UserEntity();
+            var userEntity = new UserEntity();
             BeanUtils.copyProperties(userDto, userEntity);
             userEntity.setPassword(bCryptPasswordEncoder.encode(userEntity.getPassword()));
             userEntity.setUserId(UUID.randomUUID().toString());
             userEntity = userRepository.save(userEntity);
 
-            if (!StringUtils.isEmpty(userEntity.getId())) {
-                userDto = new UserDto(true, userEntity.getUserId());
+            if (!ObjectUtils.isEmpty(userEntity.getId())) {
+                userDto.setValid(true);
+                userDto.setUserId(userEntity.getUserId());
             }
         } else {
             userDto.setValid(false);
@@ -100,9 +102,9 @@ public class UserService implements UserDetailsService {
     @Transactional
     public boolean deleteByUserId(final String userId) {
         LOG.debug("[UserService][deleteByUserId] Delete user in service started.");
-        boolean successful = false;
-        UserEntity userEntity = userRepository.findUserEntityByUserId(userId);
-        if (userEntity != null && ! StringUtils.isEmpty(userEntity.getId())) {
+        var successful = false;
+        final var userEntity = userRepository.findUserEntityByUserId(userId);
+        if (userEntity != null && ! ObjectUtils.isEmpty(userEntity.getId())) {
             userRepository.deleteById(userEntity.getId());
             successful = true;
         }
@@ -129,14 +131,15 @@ public class UserService implements UserDetailsService {
      * @return          UserDto with userId and valid state if successful
      */
     @Transactional
-    public UserDto updatePassword(UserDto userDto) {
+    public UserDto updatePassword(final UserDto userDto) {
         LOG.debug("[UserService][updatePassword] Update password in service started.");
-        UserEntity userEntity = userRepository.findUserEntityByUserId(userDto.getUserId());
-        if(userEntity != null) {
+        final var userEntity = userRepository.findUserEntityByUserId(userDto.getUserId());
+        if (userEntity != null) {
             userEntity.setPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
-            UserEntity updatedUser = userRepository.save(userEntity);
-            if (! StringUtils.isEmpty(updatedUser.getId())) {
-                userDto = new UserDto(true, updatedUser.getUserId());
+            final var updatedUser = userRepository.save(userEntity);
+            if (! ObjectUtils.isEmpty(updatedUser.getId())) {
+                userDto.setValid(true);
+                userDto.setUserId(updatedUser.getUserId());
             }
         } else {
             userDto.setValid(false);
@@ -156,7 +159,7 @@ public class UserService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(final String username) {
         LOG.debug("[UserService][loadUserByUsername] Lookup user by username in service started.");
-        UserDto userDto = new UserDto();
+        var userDto = new UserDto();
         userDto.setUsername(username);
         userDto = lookupUser(userDto);
 

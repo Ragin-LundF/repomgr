@@ -2,7 +2,7 @@ package com.repomgr.repomanager.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.http.HttpHeaders;
-import org.springframework.util.StringUtils;
+import org.springframework.util.ObjectUtils;
 
 @ConfigurationProperties(prefix="repomanager")
 public class RepoManagerProperties {
@@ -15,7 +15,7 @@ public class RepoManagerProperties {
         return security;
     }
 
-    public void setSecurity(Security security) {
+    public void setSecurity(final Security security) {
         this.security = security;
     }
 
@@ -25,13 +25,13 @@ public class RepoManagerProperties {
         private Long tokenExpirationTime;
 
         public String getHeaderName() {
-            if (StringUtils.isEmpty(headerName)) {
+            if (ObjectUtils.isEmpty(headerName)) {
                 headerName = HttpHeaders.AUTHORIZATION;
             }
             return headerName;
         }
 
-        public void setHeaderName(String headerName) {
+        public void setHeaderName(final String headerName) {
             this.headerName = headerName;
         }
 
@@ -39,7 +39,7 @@ public class RepoManagerProperties {
             return signingKey;
         }
 
-        public void setSigningKey(String signingKey) {
+        public void setSigningKey(final String signingKey) {
             this.signingKey = signingKey;
         }
 
@@ -47,7 +47,7 @@ public class RepoManagerProperties {
             return tokenExpirationTime;
         }
 
-        public void setTokenExpirationTime(Long tokenExpirationTime) {
+        public void setTokenExpirationTime(final Long tokenExpirationTime) {
             this.tokenExpirationTime = tokenExpirationTime;
         }
     }

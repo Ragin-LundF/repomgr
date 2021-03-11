@@ -16,7 +16,7 @@ public class PageDto {
         return totalElements;
     }
 
-    public void setTotalElements(Long totalElements) {
+    public void setTotalElements(final Long totalElements) {
         this.totalElements = totalElements;
     }
 
@@ -24,7 +24,7 @@ public class PageDto {
         return totalPages;
     }
 
-    public void setTotalPages(Integer totalPages) {
+    public void setTotalPages(final Integer totalPages) {
         this.totalPages = totalPages;
     }
 
@@ -32,7 +32,7 @@ public class PageDto {
         return currentPage;
     }
 
-    public void setCurrentPage(Integer currentPage) {
+    public void setCurrentPage(final Integer currentPage) {
         this.currentPage = currentPage;
     }
 
@@ -40,7 +40,7 @@ public class PageDto {
         return numberOfElements;
     }
 
-    public void setNumberOfElements(Integer numberOfElements) {
+    public void setNumberOfElements(final Integer numberOfElements) {
         this.numberOfElements = numberOfElements;
     }
 }

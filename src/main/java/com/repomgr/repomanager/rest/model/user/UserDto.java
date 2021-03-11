@@ -1,7 +1,6 @@
 package com.repomgr.repomanager.rest.model.user;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -31,11 +30,11 @@ public class UserDto {
     public UserDto() {
     }
 
-    public UserDto(boolean valid) {
+    public UserDto(final boolean valid) {
         this.valid = valid;
     }
 
-    public UserDto(boolean valid, String userId) {
+    public UserDto(final boolean valid, final String userId) {
         this.valid = valid;
         this.userId = userId;
     }
@@ -44,7 +43,7 @@ public class UserDto {
         return username;
     }
 
-    public void setUsername(String username) {
+    public void setUsername(final String username) {
         this.username = username;
     }
 
@@ -52,7 +51,7 @@ public class UserDto {
         return password;
     }
 
-    public void setPassword(String password) {
+    public void setPassword(final String password) {
         this.password = password;
     }
 
@@ -60,7 +59,7 @@ public class UserDto {
         return userId;
     }
 
-    public void setUserId(String userId) {
+    public void setUserId(final String userId) {
         this.userId = userId;
     }
 
@@ -68,7 +67,7 @@ public class UserDto {
         return projectName;
     }
 
-    public void setProjectName(String projectName) {
+    public void setProjectName(final String projectName) {
         this.projectName = projectName;
     }
 
@@ -76,7 +75,7 @@ public class UserDto {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(final String role) {
         this.role = role;
     }
 
@@ -88,7 +87,7 @@ public class UserDto {
         return valid;
     }
 
-    public void setValid(Boolean valid) {
+    public void setValid(final Boolean valid) {
         this.valid = valid;
     }
 }

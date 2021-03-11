@@ -24,7 +24,7 @@ public class MessageDto {
     public MessageDto() {
     }
 
-    public MessageDto(String category, String message) {
+    public MessageDto(final String category, final String message) {
         this.category = category;
         this.message = message;
     }
@@ -33,7 +33,7 @@ public class MessageDto {
         return category;
     }
 
-    public void setCategory(String category) {
+    public void setCategory(final String category) {
         this.category = category;
     }
 
@@ -41,7 +41,7 @@ public class MessageDto {
         return message;
     }
 
-    public void setMessage(String message) {
+    public void setMessage(final String message) {
         this.message = message;
     }
 }

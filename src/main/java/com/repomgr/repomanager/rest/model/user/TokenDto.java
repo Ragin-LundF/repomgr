@@ -2,7 +2,6 @@ package com.repomgr.repomanager.rest.model.user;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.repomgr.repomanager.rest.model.common.ResponseDto;
-
 import javax.validation.constraints.NotNull;
 
 /**
@@ -17,11 +16,11 @@ public class TokenDto extends ResponseDto {
     public TokenDto(){
     }
 
-    public TokenDto(String token){
+    public TokenDto(final String token){
         this.token = token;
     }
 
-    public TokenDto(String token, String userId){
+    public TokenDto(final String token, final String userId){
         this.token = token;
         this.userId = userId;
     }
@@ -30,7 +29,7 @@ public class TokenDto extends ResponseDto {
         return token;
     }
 
-    public void setToken(String token) {
+    public void setToken(final String token) {
         this.token = token;
     }
 
@@ -38,7 +37,7 @@ public class TokenDto extends ResponseDto {
         return userId;
     }
 
-    public void setUserId(String userId) {
+    public void setUserId(final String userId) {
         this.userId = userId;
     }
 }

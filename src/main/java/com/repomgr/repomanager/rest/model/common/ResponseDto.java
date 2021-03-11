@@ -2,7 +2,6 @@ package com.repomgr.repomanager.rest.model.common;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.repomgr.repomanager.rest.model.common.MessageDto;
 
 /**
  * Response Object for common messages and a status, if action was successful (valid = true) or if action failed (valid = false)
@@ -17,11 +16,11 @@ public class ResponseDto {
     public ResponseDto() {
     }
 
-    public ResponseDto(boolean status) {
+    public ResponseDto(final boolean status) {
         this.status = status;
     }
 
-    public ResponseDto(boolean status, MessageDto messageDto) {
+    public ResponseDto(final boolean status, final MessageDto messageDto) {
         this.status = status;
         this.message = messageDto;
     }
@@ -30,7 +29,7 @@ public class ResponseDto {
         return status;
     }
 
-    public void setStatus(boolean status) {
+    public void setStatus(final boolean status) {
         this.status = status;
     }
 
@@ -38,7 +37,7 @@ public class ResponseDto {
         return message;
     }
 
-    public void setMessage(MessageDto message) {
+    public void setMessage(final MessageDto message) {
         this.message = message;
     }
 }
