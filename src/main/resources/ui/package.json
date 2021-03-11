@@ -6,9 +6,9 @@
     "start": "webpack-dev-server --open"
   },
   "dependencies": {
-    "lodash": "^4.17.19",
-    "react": "^16.13.1",
-    "react-dom": "^16.13.1",
+    "lodash": "^4.17.21",
+    "react": "^16.14.0",
+    "react-dom": "^16.14.0",
     "react-table": "^6.11.5"
   },
   "devDependencies": {
@@ -19,8 +19,8 @@
     "babel-preset-stage-0": "^6.24.1",
     "html-webpack-plugin": "^3.2.0",
     "path": "^0.12.7",
-    "webpack": "^4.42.0",
-    "webpack-cli": "^3.3.11",
-    "webpack-dev-server": "^3.11.0"
+    "webpack": "^4.46.0",
+    "webpack-cli": "^3.3.12",
+    "webpack-dev-server": "^3.11.2"
   }
 }

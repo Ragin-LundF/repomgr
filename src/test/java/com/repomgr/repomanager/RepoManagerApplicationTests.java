@@ -1,34 +1,34 @@
 package com.repomgr.repomanager;
 
+import static org.hamcrest.Matchers.containsString;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.repomgr.repomanager.constants.Constants;
 import com.repomgr.repomanager.rest.model.artifacts.ArtifactDto;
+import com.repomgr.repomanager.rest.model.artifacts.VersionInformationDto;
 import com.repomgr.repomanager.rest.model.user.PasswordDto;
 import com.repomgr.repomanager.rest.model.user.TokenDto;
 import com.repomgr.repomanager.rest.model.user.UserDto;
-import com.repomgr.repomanager.rest.model.artifacts.VersionInformationDto;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import java.util.Date;
+import java.util.concurrent.ThreadLocalRandom;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
-import java.util.Date;
-import java.util.concurrent.ThreadLocalRandom;
-
-import static org.hamcrest.Matchers.containsString;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 public class RepoManagerApplicationTests {
@@ -44,7 +44,7 @@ public class RepoManagerApplicationTests {
 
     @Test
     public void testGenerateToken() throws Exception {
-        Assert.assertNotNull(createToken());
+        Assertions.assertNotNull(createToken());
     }
 
     @Test
@@ -136,7 +136,7 @@ public class RepoManagerApplicationTests {
     /**
      * Helper method for token creation
      *
-     * @return              Token for admin user
+     * @return Token for admin user
      * @throws Exception
      */
     private String createToken() throws Exception {
@@ -182,7 +182,7 @@ public class RepoManagerApplicationTests {
     /**
      * Helper method for creating new user
      *
-     * @return          ResultActions
+     * @return ResultActions
      * @throws Exception
      */
     private ResultActions createUser() throws Exception {

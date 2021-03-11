@@ -8,19 +8,19 @@ plugins {
     id "idea"
     id "java"
     id "application"
-    id "org.springframework.boot" version "2.3.2.RELEASE"
-    id "io.spring.dependency-management" version "1.0.9.RELEASE"
+    id "org.springframework.boot" version "2.4.2"
+    id "io.spring.dependency-management" version "1.0.11.RELEASE"
     id "maven"
     id "maven-publish"
-    id "org.sonarqube" version "2.7"
+    id "org.sonarqube" version "3.0"
 }
 
 wrapper {
-    gradleVersion = '6.4.1'
+    gradleVersion = '6.8.1'
 }
 
-sourceCompatibility = JavaVersion.VERSION_1_10
-targetCompatibility = JavaVersion.VERSION_1_10
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11
 
 startScripts {
     mainClassName = 'com.repomgr.repomanager.RepoManagerApplication'
@@ -40,7 +40,7 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-starter-web"
     implementation "org.springframework.boot:spring-boot-starter-data-jpa"
     implementation "org.reactivestreams:reactive-streams:1.0.3"
-    implementation "com.fasterxml.jackson.module:jackson-module-jaxb-annotations:2.11.1"
+    implementation "com.fasterxml.jackson.module:jackson-module-jaxb-annotations:2.12.1"
     implementation "com.google.code.findbugs:jsr305:${versionGoogleJsr305}"
     implementation "io.jsonwebtoken:jjwt:${versionJjwt}"
     implementation "org.liquibase:liquibase-core"
@@ -51,7 +51,7 @@ dependencies {
     testImplementation "org.springframework.security:spring-security-test"
     testRuntime "com.h2database:h2:${versionTestH2}"
     annotationProcessor "org.springframework:spring-context-indexer"
-    compile 'org.springframework.experimental:spring-graal-native:0.6.1.RELEASE'
+    compile 'org.springframework.experimental:spring-graal-native:0.6.+'
 }
 
 bootJar {
